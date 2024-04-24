@@ -18,7 +18,7 @@ there you have to install [`cargo-generate`](https://github.com/cargo-generate/c
     ```
     cargo install cargo-generate
     ```
-3.   Clone dir dieses Repo
+3.   Clone this Repo
 
     git clone https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/
  
