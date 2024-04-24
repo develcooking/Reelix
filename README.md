@@ -18,13 +18,19 @@ there you have to install [`cargo-generate`](https://github.com/cargo-generate/c
     ```
     cargo install cargo-generate
     ```
-3.   Clone dir dieses Repo  ```
+3.   Clone dir dieses Repo
+
     git clone https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/
-    ```
-4. Cd into it    ```cd ./reelix ```
+ 
+4. Cd into it    
+```
+cd ./reelix
+ ```
 5. Smash your head against the wall
 6. Build the binary
-```cargo build  ```
+```
+cargo build
+```
 
 
 If this doesn't work good luck 
