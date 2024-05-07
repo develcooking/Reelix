@@ -35,8 +35,66 @@ cargo build
 
 If this doesn't work good luck 
 
-## This to do (Basicly all)
+## Things to do (Basicly all)
 
 
 Connect to a sql database
 and a lot more
+
+
+##Things Reelix needs to can:
+Typs must be removeable and addable
+Typs must be centrilysed in a place (maybe another table)
+clients must use them form the cenrilysed location
+
+ex. allgemeine auskunft, bayzeit etc.
+
+
+anfragen-log
+analytics
+statistics
+
+
+
+# Setting up the database
+Install mariadb or mysql on a Linux system of your choice
+Recommended  latest stable release of Debian currently 12
+
+From : [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
+I know it's for Debian 11 but it also works on 12
+
+```
+sudo apt update
+sudo apt install mariadb-server
+sudo mysql_secure_installation
+```
+
+Check if it worked
+```
+sudo systemctl status mariadb
+```
+
+Go into mariadb
+```
+sudo mariadb
+```
+
+Create a Database
+```
+CREATE DATABASE your_database_name;
+```
+
+Create a User with password
+```
+CREATE USER 'your_database_username'@'localhost' IDENTIFIED BY 'your_database_password';
+```
+
+Then grant the user all permissions on the database (can be insecure)
+```
+GRANT ALL PRIVILEGES ON your_database_name.* TO 'your_database_username'@'%';
+```
+
+Then grant the user acses to the the database from every host (can be insecure)
+```
+GRANT ALL PRIVILEGES ON *.* TO 'your_database_username'@'%' IDENTIFIED BY 'your_database_password' WITH GRANT OPTION;
+```
