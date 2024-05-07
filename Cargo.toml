@@ -1,14 +1,9 @@
 [package]
-name = "reelix"
-version = "0.0.1"
-authors = ["jan-peter.friebe@uni-bamberg.de"]
+name = "Ask-for-colums"
+version = "0.1.0"
 edition = "2021"
-build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-slint = "1.5"
-
-[build-dependencies]
-slint-build = "1.5"
+mysql = "20.1.0"
