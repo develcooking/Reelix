@@ -1,0 +1,1 @@
+# Remove Typethis is a very simple test build to remove a type from the database

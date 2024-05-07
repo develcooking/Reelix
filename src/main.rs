@@ -11,16 +11,16 @@ fn main() {
     let mut conn = pool.get_conn()
         .expect("Failed to get a connection from the pool");
 
-    println!("Bitte geben Sie den Typen ein:");
+    println!("Bitte geben Sie den zu löschenden Typen ein:");
     let mut input = String::new();
     io::stdin().read_line(&mut input)
         .expect("Fehler beim Einlesen der Eingabe");
-    let Typen = input.trim();
+    let typen = input.trim();
 
     conn.exec_drop(
-        r"INSERT INTO Typtabelle (Typen) VALUES (?)",
-        (&Typen,)
-    ).expect("Fehler beim Einfügen der Daten");
+        r"DELETE FROM Typtabelle WHERE Typen = ?",
+        (&typen,)
+    ).expect("Fehler beim Löschen der Daten");
     
-    println!("Daten erfolgreich eingefügt!");
+    println!("Daten erfolgreich gelöscht!");
 }
