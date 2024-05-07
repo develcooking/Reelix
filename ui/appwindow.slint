@@ -1,4 +1,4 @@
-import {AboutSlint, TextEdit, TabWidget, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button } from "std-widgets.slint";
+import {AboutSlint, TextEdit, TabWidget, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView } from "std-widgets.slint";
 
 component AboutSlint1 inherits Window {
     width: 128px;
@@ -13,6 +13,34 @@ component ComboBox1  {
         y: -20px;
         model: ["Allgemeine Auskunft", "BayZeit", "campusprint", "E-Mail-Dienste", "efolio", "EvaExam", "EvaSys (alles andere)", "EvaSys (scannen)", "Fileserver", "Geräteausleihe", "Hardwarebeschaffung", "Hardwarebetreuung", "icprint", "IT-Sicherheit", "Medientechnik", "Nutzerkonto", "Panopto", "Passwortänderung & Passwort-Probleme", "PC-Pools", "Softwarebeschaffung", "Softwarebetreuung", "Sonstiges / Keiner Kategorie zugehörig", "Telefontechnik", "Typo3", "UnivIS", "Verweise an nicht-RZ-Abteilungen", "Videokonferez", "Virtueller Campus", "Zugangsprobleme zum Netzwerk"];
         current-value: "Allgemeine Auskunft";
+    }
+}
+
+export component Anfragentabelle inherits Window {
+    StandardTableView {
+        preferred-width: 800px;
+
+        columns: [
+            { title: "ID" },
+            { title: "Datum" },
+            { title: "Zeit" },
+            { title: "Anfragentyp" },
+            { title: "Betriebssystem" },
+            { title: "Kommentar" },
+            { title: "Ort" },
+
+        ];
+        rows: [
+            [
+                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
+            ],
+            [
+                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
+            ],
+            [
+                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
+            ]
+        ];
     }
 }
 component Tabsandmore  {
@@ -54,11 +82,11 @@ component Tabsandmore  {
 
             Tab {
                 title: @tr("Anfragen-Log");
-
+                Anfragentabelle {}
                 VerticalBox {
-                Text {
+              /*  Text {
                     text: @tr("Need to implemment\n https://github.com/slint-ui/slint/blob/master/examples/gallery/ui/pages/table_view_page.slint");
-                     }
+                     }*/
                 }
                 }
             
@@ -105,13 +133,13 @@ component Tabsandmore  {
     }
 }  
 }
+
 export component MainWindow inherits Window {
-    height: 400px;
+    height: 420px;
     width: 820px;
     title: @tr("Reelix");
     icon: @image-url("../images/Reelix.png");
     Tabsandmore {}
 
-    
     
 }
