@@ -1,10 +1,117 @@
-import { VerticalBox, ComboBox } from "std-widgets.slint";
+import {AboutSlint, TextEdit, TabWidget, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button } from "std-widgets.slint";
 
+component AboutSlint1 inherits Window {
+    width: 128px;
+    height: 128px;
+    AboutSlint {
+    }
+}
+component ComboBox1  {
+    ComboBox {
+        width: 560px;
+        height: 40px;
+        y: -20px;
+        model: ["Allgemeine Auskunft", "BayZeit", "campusprint", "E-Mail-Dienste", "efolio", "EvaExam", "EvaSys (alles andere)", "EvaSys (scannen)", "Fileserver", "Geräteausleihe", "Hardwarebeschaffung", "Hardwarebetreuung", "icprint", "IT-Sicherheit", "Medientechnik", "Nutzerkonto", "Panopto", "Passwortänderung & Passwort-Probleme", "PC-Pools", "Softwarebeschaffung", "Softwarebetreuung", "Sonstiges / Keiner Kategorie zugehörig", "Telefontechnik", "Typo3", "UnivIS", "Verweise an nicht-RZ-Abteilungen", "Videokonferez", "Virtueller Campus", "Zugangsprobleme zum Netzwerk"];
+        current-value: "Allgemeine Auskunft";
+    }
+}
+component Tabsandmore  {
+    callback open-url(string);
+
+    GroupBox {
+        width: 820px;
+        height: 420px;
+        x: -410px;
+        y: -220px;
+        
+        
+        HorizontalBox {
+            alignment: center;
+            
+        TabWidget {
+            Tab {
+                title: @tr("Aufnehmen");
+
+                VerticalBox {
+                    alignment: start;
+
+                    GroupBox {
+                      
+
+                        VerticalBox {
+                            alignment: center;
+                            spacing: 30px;
+
+                            ComboBox1 {}
+                            Text {
+                                text: @tr("Still Under Construction");
+                            }
+                        }
+                        
+                    }
+                }
+            }
+
+            Tab {
+                title: @tr("Anfragen-Log");
+
+                VerticalBox {
+                Text {
+                    text: @tr("Need to implemment\n https://github.com/slint-ui/slint/blob/master/examples/gallery/ui/pages/table_view_page.slint");
+                     }
+                }
+                }
+            
+
+            Tab {
+                title: @tr("Statistik");
+
+                VerticalBox {
+                    Text {
+                        text: @tr("Under Construction");
+                    }
+                }
+            }
+
+            Tab {
+                title: @tr("Auswerten");
+
+                VerticalBox {
+                    Text {
+                        text: @tr("Under Construction");
+                    }
+                }
+            }
+
+            Tab {
+                title: @tr("Info");
+
+                VerticalBox {
+                    Text {
+                        text: @tr("Product: Reelix (Working title)\nVersion: 0.0.1 (extreme Alpha)");
+                    }
+                    Text {
+                        text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
+                        color: blue;
+                       // TouchArea { clicked => { root.open-url(parent.text); } }
+                    }
+                    Text {
+                        text: @tr("links don't work yet");
+                    }
+                    AboutSlint1 {}
+                }
+            }
+        }
+    }
+}  
+}
 export component MainWindow inherits Window {
-    in property <[string]> the_model;
+    height: 400px;
+    width: 820px;
+    title: @tr("Reelix");
+    icon: @image-url("../images/Reelix.png");
+    Tabsandmore {}
 
     
-        ComboBox {
-            model: the_model;
-        }
+    
 }

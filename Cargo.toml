@@ -1,16 +1,14 @@
 [package]
-name = "combobox-test"
-version = "0.1.0"
+name = "reelix"
+version = "0.0.1"
+authors = ["jan-peter.friebe@uni-bamberg.de"]
 edition = "2021"
+build = "build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-
 [dependencies]
-slint = { version = "1.5.1", features = ["gettext"] }
-mysql = "25.0.0"
-lazy_static = "1.4.0"
+slint = "1.5"
 
 [build-dependencies]
 slint-build = "1.5"
-
