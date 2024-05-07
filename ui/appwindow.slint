@@ -1,0 +1,56 @@
+import { TextEdit,LineEdit,ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView, ProgressIndicator } from "std-widgets.slint";
+
+
+
+
+
+export component MainWindow inherits Window {
+    in-out property<string> thedatabase: "";
+
+    callback show_database();
+    callback createtype(string);
+    height: 500px;
+    width: 600px;
+    title: @tr("typentest");
+
+
+    VerticalBox {
+
+
+    }
+    GridLayout {
+        padding: 50px;
+        spacing: 25px;
+        max-height: 20px;
+        Row {
+            newtypeinput := LineEdit {
+                font-size: 16px;
+                placeholder-text: @tr("Create your Type");
+                horizontal-alignment: center;
+                padding: 8px;
+            }
+
+            Text {
+                text: @tr("Types in databank: \n {0}", root.thedatabase);
+            }
+        }
+
+        Row {
+            Button {
+                text: @tr("Insert into Databank");
+                primary: true;
+                padding: 8px;
+                clicked => {
+                    createtype(newtypeinput.text)
+                }
+            }
+            Button {
+                text: @tr("Show Typs");
+                clicked => {
+                    root.show_database();
+                }
+            }
+          
+        }
+    }
+}
