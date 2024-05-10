@@ -1,0 +1,79 @@
+import {ScrollView,Palette,StyleMetrics, HorizontalBox} from "std-widgets.slint";
+
+export component ComboBoxScroll {
+    in property <[string]> model;
+    in-out property <int> current-index: 0;
+    in-out property <string> current-value: root.model[root.current-index];
+    out property <bool> has-focus;
+    Rectangle {
+        background: Palette.control-background;
+        border-radius: 3px;
+        border-width: 2px;
+        border-color: gray;
+    }
+
+    HorizontalBox { 
+        label := Text {
+            vertical-alignment: center;
+            horizontal-alignment: left;
+            text <=> root.current-value;
+            font-size: 16px;
+            color: whitesmoke;
+            horizontal-stretch: 1;
+        }
+        Text {
+            text: "▼";
+        }
+    }
+
+    TouchArea {
+        width: 100%;
+        height: 100%;
+        clicked => { popup.show(); }
+    }
+
+    popup := PopupWindow {
+        x:0;
+        y: root.height;
+        width: root.width;
+        height: min(inner.preferred-height);
+        
+        
+        Rectangle {
+            background:  Palette.control-background;
+            border-radius: 3px;
+            border-width: 2px;
+            border-color: gray;
+        }
+        ScrollView {
+            inner := VerticalLayout {
+                spacing: 6px;
+                padding: 3px;
+
+                min-width: max(160px);
+                min-height: max(32px);
+                for value[idx] in root.model: Rectangle {
+                    border-radius: 3px;
+                    background: item-area.has-hover ? StyleMetrics.window-background.brighter(1.5) : Palette.control-background;
+                 //   background: item-area.has-hover ? Palette.control-background :gray;
+                 //     background: gray;
+                    HorizontalLayout {
+                        alignment: center;
+                        min-height: 20px;
+
+                        Text {
+                            
+                            text: value;           
+                            font-size: 14 * 0.0769rem;            
+                        }
+                    }
+                    item-area := TouchArea {
+                        clicked => {
+                            root.current-value = value;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
