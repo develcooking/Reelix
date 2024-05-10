@@ -1,4 +1,5 @@
-import {AboutSlint, TextEdit, TabWidget, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView } from "std-widgets.slint";
+import {AboutSlint, TextEdit, LineEdit,TabWidget,ScrollView,Palette,StyleMetrics, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView, GridBox } from "std-widgets.slint";
+import { ComboBoxScroll } from "ComboBoxScroll.slint";
 
 component AboutSlint1 inherits Window {
     width: 128px;
@@ -7,12 +8,13 @@ component AboutSlint1 inherits Window {
     }
 }
 component ComboBox1  {
+    in property <[string]> the_model;
+
     ComboBox {
         width: 560px;
         height: 40px;
         y: -20px;
-        model: ["Allgemeine Auskunft", "BayZeit", "campusprint", "E-Mail-Dienste", "efolio", "EvaExam", "EvaSys (alles andere)", "EvaSys (scannen)", "Fileserver", "Geräteausleihe", "Hardwarebeschaffung", "Hardwarebetreuung", "icprint", "IT-Sicherheit", "Medientechnik", "Nutzerkonto", "Panopto", "Passwortänderung & Passwort-Probleme", "PC-Pools", "Softwarebeschaffung", "Softwarebetreuung", "Sonstiges / Keiner Kategorie zugehörig", "Telefontechnik", "Typo3", "UnivIS", "Verweise an nicht-RZ-Abteilungen", "Videokonferez", "Virtueller Campus", "Zugangsprobleme zum Netzwerk"];
-        current-value: "Allgemeine Auskunft";
+        model: the_model;
     }
 }
 
@@ -43,14 +45,24 @@ export component Anfragentabelle inherits Window {
         ];
     }
 }
-component Tabsandmore  {
-    callback open-url(string);
 
+export component MainWindow inherits Window {
+    callback open-url(string);
+    callback cabavalueofcombobox(string);
+    callback createtype(string);
+
+    in property <[string]> the_model;
+
+    height: 420px;
+    width: 820px;
+    title: @tr("Reelix");
+    icon: @image-url("../images/Reelix.png");
+
+
+
+   
     GroupBox {
-        width: 820px;
-        height: 420px;
-        x: -410px;
-        y: -220px;
+    y: -20px;
         
         
         HorizontalBox {
@@ -112,34 +124,89 @@ component Tabsandmore  {
             }
 
             Tab {
-                title: @tr("Info");
+                title: @tr("Settings");
+                TabWidget {
+                    Tab {
+                        title: @tr("Manage Categories");
+                        GridBox {
+                            Row{
+                                    Text {
+                                        horizontal-alignment: center;
+                                        vertical-alignment: center;
+                                        text: @tr("Creating");
+                                        font-size: 14px;
+                                        height: 10%;
+                                    }
+                                    Text {
+                                        horizontal-alignment: center;
+                                        vertical-alignment: center;
+                                        text: @tr("Removeing");
+                                        font-size: 14px;
+                                        height: 10%;
+                                    }
+                                
+                            }
+                            Row{
+                                newtypeinput := LineEdit {
+                                    font-size: 16px;
+                                    placeholder-text: @tr("Create your Type");
+                                    padding: 8px;
+                                    
+                                }
+                                valueofcombobox := ComboBoxScroll {
+                                 height: 60px;
+                                 width: 45%;
+                                 model: the_model;
+                                } 
+                                
+                        }
+                        Row{
 
-                VerticalBox {
-                    Text {
-                        text: @tr("Product: Reelix (Working title)\nVersion: 0.0.1 (extreme Alpha)");
+                            Button {
+                                text: @tr("Insert into Databank");
+                                padding: 8px;
+                                clicked => {
+                                    createtype(newtypeinput.text)
+                                }
+                            }
+                            Button {
+                                text: "Delete";
+                                clicked => {
+                                    cabavalueofcombobox(valueofcombobox.current-value)
+                                }
+                            } 
+                         }
+
+
+                         
                     }
-                    Text {
-                        text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
-                        color: blue;
-                       // TouchArea { clicked => { root.open-url(parent.text); } }
                     }
-                    Text {
-                        text: @tr("links don't work yet");
+                    Tab {
+                        title: @tr("Info");
+
+                        VerticalBox {
+                            Text {
+                                text: @tr("Product: Reelix (Working title)\nVersion: 0.0.2 (extreme Alpha)");
+                            }                    Text {
+                                text: @tr("Developed by: Jan-Peter Friebe\n");
+                            }
+                            Text {
+                                text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
+                                color: lightblue;
+
+                                TouchArea { clicked => { root.open-url(parent.text); } }
+                            }
+
+                            AboutSlint1 {}
+                        }
+
+                        
                     }
-                    AboutSlint1 {}
+
                 }
+
             }
         }
     }
 }  
-}
-
-export component MainWindow inherits Window {
-    height: 420px;
-    width: 820px;
-    title: @tr("Reelix");
-    icon: @image-url("../images/Reelix.png");
-    Tabsandmore {}
-
-    
 }
