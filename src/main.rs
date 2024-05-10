@@ -38,6 +38,12 @@ fn main() -> Result<(), slint::PlatformError> {
     let model_rc = Rc::new(VecModel::from(shared_strings)).into();
     ui.set_the_model(model_rc);
 
+    // Define a closure to create and insert data into the database based on user input
+    ui.on_cabavalueofcombobox(move |valueofcombobox| {
+       println!("hi {}", valueofcombobox)
+    });
+
+
     ui.run()?;
     Ok(())
 }
