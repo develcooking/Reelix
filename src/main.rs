@@ -16,7 +16,7 @@ lazy_static! {
 fn fetch_data_from_database() -> Result<Vec<String>, slint::PlatformError> {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
-        let types: Vec<String> = conn
+    let types: Vec<String> = conn
         .query_map(
             "SELECT Typen FROM Typtabelle ORDER BY Typen ASC",
             |row: Row| row.get("Typen").unwrap(),
@@ -25,7 +25,8 @@ fn fetch_data_from_database() -> Result<Vec<String>, slint::PlatformError> {
 
     Ok(types)
 }
-fn remove_data_from_database(valueofcombobox: &str)  {
+
+fn remove_data_from_database(valueofcombobox: &str) {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
     let typen = valueofcombobox.trim();
@@ -34,7 +35,6 @@ fn remove_data_from_database(valueofcombobox: &str)  {
         r"DELETE FROM Typtabelle WHERE Typen = ?",
         (&typen,)
     ).expect("Fehler beim Löschen der Daten");
-
 }
 
 fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> {
@@ -55,7 +55,7 @@ fn createdata(input_text: &str) {
     let trimmed_text = input_text.trim();
     let filtered_text = trimmed_text.chars()
         .collect::<String>();
-    
+
     // Get a connection from the connection pool
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
@@ -69,7 +69,7 @@ fn createdata(input_text: &str) {
             r"INSERT INTO Typtabelle (Typen) VALUES (?)",
             (&filtered_text,)
         ).expect("Error inserting data");
-        
+
         println!("Data inserted successfully!");
     } else {
         println!("Empty or whitespace-laden type string not inserted into the database.");
@@ -79,28 +79,29 @@ fn createdata(input_text: &str) {
 fn main() -> Result<(), slint::PlatformError> {
     let ui = MainWindow::new()?;
     let ui_handle = ui.as_weak();
-    update_database_display(&ui);
+    let _ = update_database_display(&ui);
+    
 
     let ui_handle_copy = ui_handle.clone();
 
     // Define a closure to create and insert data into the database based on user input
-    ui.on_cabavalueofcombobox(move |valueofcombobox| {
-       println!("removed {} from database", valueofcombobox);
-       remove_data_from_database(&valueofcombobox);
-       update_database_display(&ui_handle_copy.unwrap());
-
+    ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox| {
+        println!("removed {} from database", valueofcombobox);
+        remove_data_from_database(&valueofcombobox);
+        let _ = update_database_display(&ui_handle_copy.unwrap());
     });
 
-    ui.on_createtype(move |newtypeinput| {
+    ui.global::<Logic>().on_createtype(move |newtypeinput: SharedString| {
         let extract_string: String = newtypeinput.trim().parse().unwrap();
         createdata(&extract_string);
-        
-        update_database_display(&ui_handle.unwrap());
+
+        let _ = update_database_display(&ui_handle.unwrap());
     });
-    
-    ui.on_open_url(|url| {
+
+    ui.global::<Logic>().on_open_url(|url: SharedString| {
         open::that(url.as_str()).ok();
     });
+    
 
     ui.run()?;
     Ok(())

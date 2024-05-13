@@ -1,0 +1,59 @@
+import {GridBox, LineEdit, HorizontalBox,Button} from "std-widgets.slint";
+import { ComboBoxScroll } from "../ComboBoxScroll.slint";
+
+export component CategoriesPage {
+    callback createtype(string);
+    in property <[string]> the_model;
+    callback cabavalueofcombobox (string);
+    callback open-url(string);
+
+GridBox {
+    Row{
+            Text {
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                text: @tr("Create a Type");
+                font-size: 14px;
+                height: 10%;
+            }
+            Text {
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                text: @tr("Remove a Type");
+                font-size: 14px;
+                height: 10%;
+            }
+        
+    }
+    Row{
+        newtypeinput := LineEdit {
+            font-size: 16px;
+            placeholder-text: @tr("How should your Type be called");
+            padding: 8px;
+            
+        }
+        valueofcombobox := ComboBoxScroll {
+         height: 60px;
+         width: 45%;
+         model: the_model;
+        } 
+        
+}
+Row{
+
+    Button {
+        text: @tr("Insert into Databank");
+        padding: 8px;
+        clicked => {
+            createtype(newtypeinput.text)
+        }
+    }
+    Button {
+        text: "Delete";
+        clicked => {
+            cabavalueofcombobox(valueofcombobox.current-value)
+        }
+    } 
+ }
+}
+}
