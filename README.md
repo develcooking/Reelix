@@ -15,7 +15,7 @@ Reelix wants to redo all this. Written in Rust and uses [Slint](https://slint.de
 and a lot more
 
 
- At Aufnehmen panel
+ A Record panel
 - Custom scrollable combobox for Aufnehmen panel and deleting categories in settings
 - A text box in Aufnehmen for editional info
 - Select time for submitting
@@ -23,20 +23,30 @@ and a lot more
 - Select the number of thickets you want to create at once
 - Submitt button 
 
-At Anfragen-Log panel (The Table)
+A Request-Log panel (The Table)
 - Dynamicly Created Table sheet
 - show the latest 20 entrys 
 - ability to load more older once with a extra button
 - ability to remove accidely created once
 
-At Statistik panel
+A Statistics panel
 - Show statisc form the last 7 days
 - optional to ask for a specific date range
 - optional scroll back to the 7 days before the current week
 
-At Auswerten panel
+A Analyzes panel
 - Export sql table to csv or html
 - need to have the ability to select the date range
+
+A Categorie Management panel
+- To Create Categories(Typs)
+- To Delete Categories(Typs)
+
+A Settings panel
+- To change some configs in the application itself
+
+A Info panel
+- show some stuff about the application 
 
 and a lot more
 

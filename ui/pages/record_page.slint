@@ -1,0 +1,35 @@
+import {VerticalBox, ComboBox, GroupBox} from "std-widgets.slint";
+export component RecordPage inherits Rectangle {
+    callback createtype(string);
+    in property <[string]> the_model;
+    callback cabavalueofcombobox (string);
+    VerticalBox {
+        alignment: start;
+    
+        GroupBox {
+          
+    
+            hi := VerticalBox {
+                alignment: center;
+                spacing: 30px;
+    
+                in property <[string]> the_model;
+    
+                 ComboBox {
+                    width: 560px;
+                    height: 40px;
+                  
+                    model: the_model;
+                }            Text {
+                    text: @tr("Still Under Construction");
+                }
+    
+                }
+                
+                
+            }
+            
+        }
+        
+      
+    }

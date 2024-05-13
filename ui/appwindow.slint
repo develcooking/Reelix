@@ -1,212 +1,58 @@
 import {AboutSlint, TextEdit, LineEdit,TabWidget,ScrollView,Palette,StyleMetrics, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView, GridBox } from "std-widgets.slint";
 import { ComboBoxScroll } from "ComboBoxScroll.slint";
+import { SideBar } from "side_bar.slint";
+import { RecordPage, RequestPage, StatisticsPage, AnalyzesPage, CategoriesPage, SettingsPage, AboutPage } from "pages/pages.slint";
 
-component AboutSlint1 inherits Window {
-    width: 128px;
-    height: 128px;
-    AboutSlint {
-    }
+export global Logic {
+     callback open-url(string);
+     callback cabavalueofcombobox(string);
+     callback createtype(string);
 }
-component ComboBox1  {
-    in property <[string]> the_model;
+export component AboutPage {
 
-    ComboBox {
-        width: 560px;
-        height: 40px;
-        y: -20px;
-        model: the_model;
-    }
-}
 
-export component Anfragentabelle inherits Window {
-    StandardTableView {
-        preferred-width: 800px;
+    VerticalBox {
+        Text {
+            text: @tr("Product: Reelix (Working title)\nVersion: 0.0.2 (extreme Alpha)");
+        }                    Text {
+            text: @tr("Developed by: Jan-Peter Friebe\n");
+        }
+        Text {
+            text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
+            color: lightblue;
 
-        columns: [
-            { title: "ID" },
-            { title: "Datum" },
-            { title: "Zeit" },
-            { title: "Anfragentyp" },
-            { title: "Betriebssystem" },
-            { title: "Kommentar" },
-            { title: "Ort" },
-
-        ];
-        rows: [
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ],
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ],
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ]
-        ];
+            TouchArea { clicked => { Logic.open-url(parent.text); } }
+        }
+        AboutSlint {
+            max-width: 256px;
+            max-height: 256px;
+            preferred-width: 128px;
+            preferred-height: 128px;
+        }
     }
 }
 
 export component MainWindow inherits Window {
-    callback open-url(string);
-    callback cabavalueofcombobox(string);
-    callback createtype(string);
 
     in property <[string]> the_model;
-
+    
     height: 420px;
     width: 820px;
     title: @tr("Reelix");
     icon: @image-url("../images/Reelix.png");
 
 
-
-   
-    GroupBox {
-    y: -20px;
-        
-        
-        HorizontalBox {
-            alignment: center;
-            
-        TabWidget {
-            Tab {
-                title: @tr("Aufnehmen");
-
-                VerticalBox {
-                    alignment: start;
-
-                    GroupBox {
-                      
-
-                        VerticalBox {
-                            alignment: center;
-                            spacing: 30px;
-
-                            ComboBox1 {}
-                            Text {
-                                text: @tr("Still Under Construction");
-                            }
-                        }
-                        
-                    }
-                }
-            }
-
-            Tab {
-                title: @tr("Anfragen-Log");
-                Anfragentabelle {}
-                VerticalBox {
-              /*  Text {
-                    text: @tr("Need to implemment\n https://github.com/slint-ui/slint/blob/master/examples/gallery/ui/pages/table_view_page.slint");
-                     }*/
-                }
-                }
-            
-
-            Tab {
-                title: @tr("Statistik");
-
-                VerticalBox {
-                    Text {
-                        text: @tr("Under Construction");
-                    }
-                }
-            }
-
-            Tab {
-                title: @tr("Auswerten");
-
-                VerticalBox {
-                    Text {
-                        text: @tr("Under Construction");
-                    }
-                }
-            }
-
-            Tab {
-                title: @tr("Settings");
-                TabWidget {
-                    Tab {
-                        title: @tr("Manage Categories");
-                        GridBox {
-                            Row{
-                                    Text {
-                                        horizontal-alignment: center;
-                                        vertical-alignment: center;
-                                        text: @tr("Creating");
-                                        font-size: 14px;
-                                        height: 10%;
-                                    }
-                                    Text {
-                                        horizontal-alignment: center;
-                                        vertical-alignment: center;
-                                        text: @tr("Removeing");
-                                        font-size: 14px;
-                                        height: 10%;
-                                    }
-                                
-                            }
-                            Row{
-                                newtypeinput := LineEdit {
-                                    font-size: 16px;
-                                    placeholder-text: @tr("Create your Type");
-                                    padding: 8px;
-                                    
-                                }
-                                valueofcombobox := ComboBoxScroll {
-                                 height: 60px;
-                                 width: 45%;
-                                 model: the_model;
-                                } 
-                                
-                        }
-                        Row{
-
-                            Button {
-                                text: @tr("Insert into Databank");
-                                padding: 8px;
-                                clicked => {
-                                    createtype(newtypeinput.text)
-                                }
-                            }
-                            Button {
-                                text: "Delete";
-                                clicked => {
-                                    cabavalueofcombobox(valueofcombobox.current-value)
-                                }
-                            } 
-                         }
-
-
-                         
-                    }
-                    }
-                    Tab {
-                        title: @tr("Info");
-
-                        VerticalBox {
-                            Text {
-                                text: @tr("Product: Reelix (Working title)\nVersion: 0.0.2 (extreme Alpha)");
-                            }                    Text {
-                                text: @tr("Developed by: Jan-Peter Friebe\n");
-                            }
-                            Text {
-                                text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
-                                color: lightblue;
-
-                                TouchArea { clicked => { root.open-url(parent.text); } }
-                            }
-
-                            AboutSlint1 {}
-                        }
-
-                        
-                    }
-
-                }
-
-            }
+    HorizontalLayout {
+        side-bar := SideBar {
+            title: @tr("✨Reelix");
+            model: [@tr("Menu" => "Record"), @tr("Menu" => "Request-Log"), @tr("Menu" => "Statistics"), @tr("Menu" => "Analyzes"), @tr("Menu" => "Manage Categories"),@tr("Menu" => "Settings"), @tr("Menu" => "About")];
         }
+        if(side-bar.current-item == 0) : RecordPage {}
+        if(side-bar.current-item == 1) : RequestPage {}
+        if(side-bar.current-item == 2) : StatisticsPage {}
+        if(side-bar.current-item == 3) : AnalyzesPage {}
+        if(side-bar.current-item == 4) : CategoriesPage {}
+        if(side-bar.current-item == 5) : SettingsPage {}
+        if(side-bar.current-item == 6) : AboutPage {}
     }
-}  
 }
