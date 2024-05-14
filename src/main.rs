@@ -85,7 +85,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui_handle_copy = ui_handle.clone();
 
     // Define a closure to create and insert data into the database based on user input
-    ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox| {
+    ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox: SharedString| {
         println!("removed {} from database", valueofcombobox);
         remove_data_from_database(&valueofcombobox);
         let _ = update_database_display(&ui_handle_copy.unwrap());
