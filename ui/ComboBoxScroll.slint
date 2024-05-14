@@ -8,9 +8,9 @@ export component ComboBoxScroll {
     
     Rectangle {
         background: Palette.control-background;
-        border-radius: 3px;
-        border-width: 2px;
-        border-color: gray;
+        border-radius: root.height /16;
+        border-width: 1px;
+        border-color: Palette.border;
     }
 
     HorizontalBox { 
@@ -19,7 +19,6 @@ export component ComboBoxScroll {
             horizontal-alignment: left;
             text <=> root.current-value;
             font-size: 16px;
-            color: whitesmoke;
             horizontal-stretch: 1;
         }
         Text {
