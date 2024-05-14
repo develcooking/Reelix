@@ -7,43 +7,44 @@ The databankserver uses an out of support Linux system.
 Reelix wants to redo all this. Written in Rust and uses [Slint](https://slint.dev/) as the UI Framework. Reelix sloud run on every Desktop OS after compilation. Officialy supported is only Linux and Windows.
 
 
-# Things to do (Basicly all)
+# Things to add
 
-- Dynamicly create and remove categories in info or settings or something like that
-- Support imbeddet links to open up in browser
+ On the Record panel
+- Replace Combobox with ComboboxScroll
 - Operating System selection in sertent categories
-and a lot more
-
-
- A Record panel
-- Custom scrollable combobox for Aufnehmen panel and deleting categories in settings
-- A text box in Aufnehmen for editional info
+- A text box for editional info
 - Select time for submitting
 - Select place were the issue happend 
 - Select the number of thickets you want to create at once
 - Submitt button 
 
-A Request-Log panel (The Table)
+On the Request-Log panel
 - Dynamicly Created Table sheet
 - show the latest 20 entrys 
 - ability to load more older once with a extra button
 - ability to remove accidely created once
 
-A Statistics panel
+On the Statistics panel
 - Show statisc form the last 7 days
 - optional to ask for a specific date range
 - optional scroll back to the 7 days before the current week
 
-A Analyzes panel
+On the Analyzes panel
 - Export sql table to csv or html
 - need to have the ability to select the date range
 
-A Categorie Management panel
-- To Create Categories(Typs)
-- To Delete Categories(Typs)
+On the Categorie Management panel
+- make the popup solid insted of transperent
+- ComboboxScroll support key inputs
+- ComboboxScroll tab support
 
-A Settings panel
-- To change some configs in the application itself
+On the Settings panel
+- ability to set a database timeout
+- ability to set a databse server with IPv4 address (in the future ipv6 and maybe domain name)
+- ability to set a databse port
+- ability to set a databse name
+- ability to set a databse userame
+- ability to set a databse password
 
 A Info panel
 - show some stuff about the application 
@@ -54,6 +55,10 @@ and a lot more
 ## Things done
 - Sql basics, add categories, remove categories, ask for existing categories(see cmd branches and typetesting)
 - Dynamicly create categories (in Gui) see branch combobox
+
+At Categorie Management panel
+- To Create Categories(Typs)
+- To Delete Categories(Typs)
 
 ### Things Reelix needs to can:
 Typs must be removeable and addable
