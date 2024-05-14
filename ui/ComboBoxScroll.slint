@@ -1,10 +1,11 @@
-import {ScrollView,Palette,StyleMetrics, HorizontalBox} from "std-widgets.slint";
+import {ScrollView,Palette, HorizontalBox} from "std-widgets.slint";
 
 export component ComboBoxScroll {
     in property <[string]> model;
     in-out property <int> current-index: 0;
     in-out property <string> current-value: root.model[root.current-index];
     out property <bool> has-focus;
+    
     Rectangle {
         background: Palette.control-background;
         border-radius: 3px;
@@ -54,7 +55,7 @@ export component ComboBoxScroll {
                 min-height: max(32px);
                 for value[idx] in root.model: Rectangle {
                     border-radius: 3px;
-                    background: item-area.has-hover ? StyleMetrics.window-background.brighter(1.5) : Palette.control-background;
+                    background: item-area.has-hover ? Palette.background.brighter(1.5) : Palette.control-background;
                  //   background: item-area.has-hover ? Palette.control-background :gray;
                  //     background: gray;
                     HorizontalLayout {
