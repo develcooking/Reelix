@@ -1,8 +1,10 @@
-import {VerticalBox, ComboBox, GroupBox} from "std-widgets.slint";
+import {VerticalBox, ComboBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button} from "std-widgets.slint";
+import { Logic } from "../logics.slint";
+
 export component RecordPage inherits Rectangle {
-    callback createtype(string);
     in property <[string]> the_model;
-    callback cabavalueofcombobox (string);
+   HorizontalBox {
+    alignment: center;    
     VerticalBox {
         alignment: start;
     
@@ -13,7 +15,6 @@ export component RecordPage inherits Rectangle {
                 alignment: center;
                 spacing: 30px;
     
-                in property <[string]> the_model;
     
                  ComboBox {
                     width: 560px;
@@ -25,11 +26,12 @@ export component RecordPage inherits Rectangle {
                 }
     
                 }
+
                 
                 
             }
-            
         }
-        
+}
+}   
       
     }

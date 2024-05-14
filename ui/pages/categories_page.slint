@@ -1,11 +1,8 @@
 import {GridBox, LineEdit, HorizontalBox,Button} from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
-
+import { Logic } from "../logics.slint";
 export component CategoriesPage {
-    callback createtype(string);
     in property <[string]> the_model;
-    callback cabavalueofcombobox (string);
-    callback open-url(string);
 
 GridBox {
     Row{
@@ -45,13 +42,13 @@ Row{
         text: @tr("Insert into Databank");
         padding: 8px;
         clicked => {
-            createtype(newtypeinput.text)
+            Logic.createtype(newtypeinput.text)
         }
     }
     Button {
         text: "Delete";
         clicked => {
-            cabavalueofcombobox(valueofcombobox.current-value)
+            Logic.cabavalueofcombobox(valueofcombobox.current-value)
         }
     } 
  }
