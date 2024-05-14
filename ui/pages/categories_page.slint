@@ -1,27 +1,27 @@
-import {GridBox, LineEdit, HorizontalBox,Button} from "std-widgets.slint";
+import { GridBox, LineEdit, HorizontalBox, Button, VerticalBox } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { Logic } from "../logics.slint";
 export component CategoriesPage {
     in property <[string]> the_model;
-
-GridBox {
-    Row{
-            Text {
-                horizontal-alignment: center;
-                vertical-alignment: center;
-                text: @tr("Create a Type");
-                font-size: 14px;
-                height: 10%;
-            }
-            Text {
-                horizontal-alignment: center;
-                vertical-alignment: center;
-                text: @tr("Remove a Type");
-                font-size: 14px;
-                height: 10%;
-            }
-        
+VerticalBox {
+    HorizontalBox {
+    Text {
+        horizontal-alignment: center;
+        vertical-alignment: center;
+        text: @tr("Create a Type");
+        font-size: 14px;
+        height: 10%;
     }
+    Text {
+        horizontal-alignment: center;
+        vertical-alignment: center;
+        text: @tr("Remove a Type");
+        font-size: 14px;
+        height: 10%;
+    }
+}
+GridBox {
+spacing-vertical: parent.height/1.8;
     Row{
         newtypeinput := LineEdit {
             font-size: 16px;
@@ -46,11 +46,13 @@ Row{
         }
     }
     Button {
+        max-height: 30px;
         text: "Delete";
         clicked => {
             Logic.cabavalueofcombobox(valueofcombobox.current-value)
         }
     } 
  }
+}
 }
 }
