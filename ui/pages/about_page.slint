@@ -1,7 +1,7 @@
 import {AboutSlint, VerticalBox} from "std-widgets.slint";
+import { Logic } from "../logics.slint";
 
 export component AboutPage {
-    pure callback open-url(string)-> string;
 
 
     VerticalBox {
@@ -14,7 +14,7 @@ export component AboutPage {
             text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
             color: lightblue;
 
-            TouchArea { clicked => { root.open-url(parent.text); } }
+            TouchArea { clicked => { Logic.open-url(parent.text); } }
         }
         AboutSlint {
             max-width: 256px;
