@@ -18,7 +18,7 @@ export component MainWindow inherits Window {
 
     HorizontalLayout {
         side-bar := SideBar {
-            title: @tr("✨Reelix");
+            title: @tr("Reelix");
             model: [@tr("Menu" => "Record"), @tr("Menu" => "Request-Log"), @tr("Menu" => "Statistics"), @tr("Menu" => "Analyzes"), @tr("Menu" => "Manage Categories"),@tr("Menu" => "Settings"), @tr("Menu" => "About")];
         }
         if(side-bar.current-item == 0) : RecordPage {the_model: the_model;}
