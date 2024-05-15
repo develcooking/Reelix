@@ -8,7 +8,7 @@ export component ComboBoxScroll {
     
     Rectangle {
         background: Palette.control-background;
-        border-radius: root.height /16;
+        border-radius: 3px;
         border-width: 1px;
         border-color: Palette.border;
     }
@@ -36,35 +36,27 @@ export component ComboBoxScroll {
         x:0;
         y: root.height;
         width: root.width;
-        height: min(inner.preferred-height);
+        height: min(inner.preferred-height, 230px);
         
         
         Rectangle {
             background:  Palette.control-background;
             border-radius: 3px;
-            border-width: 2px;
-            border-color: gray;
+            border-width: 1px;
+            border-color: Palette.border;
         }
         ScrollView {
             inner := VerticalLayout {
                 spacing: 6px;
                 padding: 3px;
 
-                min-width: max(160px);
-                min-height: max(32px);
                 for value[idx] in root.model: Rectangle {
                     border-radius: 3px;
                     background: item-area.has-hover ? Palette.background.brighter(1.5) : Palette.control-background;
-                 //   background: item-area.has-hover ? Palette.control-background :gray;
-                 //     background: gray;
                     HorizontalLayout {
-                        alignment: center;
-                        min-height: 20px;
-
                         Text {
-                            
-                            text: value;           
-                            font-size: 14 * 0.0769rem;            
+                            text: value;
+                            font-size: 14px;
                         }
                     }
                     item-area := TouchArea {
