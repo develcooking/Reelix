@@ -30,11 +30,17 @@ fn remove_data_from_database(valueofcombobox: &str) {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
     let typen = valueofcombobox.trim();
+    if !typen.is_empty() && typen != "Select a Category to Remove" {
+        conn.exec_drop(
+            r"DELETE FROM Typtabelle WHERE Typen = ?",
+            (&typen,)
+        ).expect("Error while removeing a Category");
+    
+        println!("Data removed successfully!");
+    } else {
+        println!("Default String to Remove or empty string can't be removed");
+    }
 
-    conn.exec_drop(
-        r"DELETE FROM Typtabelle WHERE Typen = ?",
-        (&typen,)
-    ).expect("Fehler beim Löschen der Daten");
 }
 
 fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> {
