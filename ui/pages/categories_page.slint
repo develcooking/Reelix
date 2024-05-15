@@ -33,6 +33,7 @@ spacing-vertical: parent.height/1.8;
          height: 60px;
          width: 45%;
          model: the_model;
+         current-value: "Select a Category to Remove";
         } 
         
 }
@@ -49,7 +50,8 @@ Row{
         max-height: 30px;
         text: "Delete";
         clicked => {
-            Logic.cabavalueofcombobox(valueofcombobox.current-value)
+            Logic.cabavalueofcombobox(valueofcombobox.current-value);
+            valueofcombobox.current-value = "Select a Category to Remove";
         }
     } 
  }
