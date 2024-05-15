@@ -22,13 +22,25 @@ export component RecordPage inherits Rectangle {
                   
                     model: the_model;
                 }            Text {
-                    text: @tr("Still Under Construction");
+                    text: @tr("Under Construction doesn't work yet");
                 }
     
                 }
 
+            }
+                LineEdit {
+                text: "";
+                placeholder-text: "For inquiries regarding forms, room and personal information and lost property.";
                 
-                
+                preferred-height: root.height;
+            }
+            HorizontalBox {
+            Button {
+                text: "Date";
+            }
+            Button {
+                text: "Save Record";
+                primary: true;
             }
         }
 }
