@@ -104,6 +104,12 @@ fn main() -> Result<(), slint::PlatformError> {
         let _ = update_database_display(&ui_handle.unwrap());
     });
 
+    ui.global::<Logic>().on_ossupport_value({
+        move |ossupport_value|{
+            println! ("bool: {}", ossupport_value);
+        }});
+    
+
     ui.global::<Logic>().on_open_url(|url: SharedString| {
         open::that(url.as_str()).ok();
     });
