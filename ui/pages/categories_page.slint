@@ -1,4 +1,4 @@
-import { GridBox, LineEdit, HorizontalBox, Button, VerticalBox } from "std-widgets.slint";
+import { GridBox, LineEdit, HorizontalBox, Button, VerticalBox, CheckBox } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { Logic } from "../logics.slint";
 export component CategoriesPage {
@@ -21,7 +21,6 @@ VerticalBox {
     }
 }
 GridBox {
-spacing-vertical: parent.height/1.8;
     Row{
         newtypeinput := LineEdit {
             font-size: 16px;
@@ -35,15 +34,25 @@ spacing-vertical: parent.height/1.8;
          model: the_model;
          current-value: "Select a Category to Remove";
         } 
-        
 }
-Row{
-
+HorizontalBox {
+            osbox := CheckBox {text: "Support OS selection";}
+            }
+        }
+HorizontalBox {
     Button {
         text: @tr("Insert into Databank");
         padding: 8px;
+        max-height: 30px;
         clicked => {
-            Logic.createtype(newtypeinput.text)
+            Logic.createtype(newtypeinput.text);
+            if (osbox.checked){
+                Logic.ossupport-value(true)
+            }
+            else {
+                Logic.ossupport-value(false)
+            }
+
         }
     }
     Button {
@@ -55,6 +64,5 @@ Row{
         }
     } 
  }
-}
 }
 }
