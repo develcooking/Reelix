@@ -1,0 +1,36 @@
+import {AboutSlint, TextEdit, LineEdit,TabWidget,ScrollView,Palette,StyleMetrics, ComboBox, VerticalBox, CheckBox, GroupBox, HorizontalBox, Button, StandardTableView, GridBox } from "std-widgets.slint";
+
+
+
+export component MainWindow inherits Window {
+ 
+callback hello-value(bool);
+    height: 420px;
+    width: 820px;
+    title: @tr("Reelix");
+
+    ad := CheckBox {text: "hello";
+   
+  /*  toggled => {
+        if (self.checked){
+            hallo-value(true)
+        }
+        else {
+            hallo-value(false)
+        }
+    }*/
+    }
+    Button {
+        x: 20px;
+        text: "press me";
+        clicked => {
+            if (ad.checked){
+                hello-value(true)
+            }
+            else {
+                hello-value(false)
+            }
+        }
+    }
+}
+
