@@ -1,8 +1,22 @@
-import {VerticalBox } from "std-widgets.slint";
-
+import {VerticalBox, Switch, Palette } from "std-widgets.slint";
+import { ReelixPalette } from "../globale.slint";
 export component SettingsPage {
 
     VerticalBox {
+        Switch {
+            horizontal-stretch: 0;
+            text: @tr("Dark Mode");
+            checked: Palette.color-scheme == ColorScheme.dark;
+            toggled => {
+                Palette.color-scheme = self.checked ? ColorScheme.dark : ColorScheme.light;
+                if (Palette.color-scheme == ColorScheme.light){
+                    ReelixPalette.night-mode = false;
+                }
+                else{
+                    ReelixPalette.night-mode = true;
+                }
+            }
+        }
         Text {
             text: @tr("Under Construction");
         }
