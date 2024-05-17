@@ -2,7 +2,7 @@ import {AboutSlint, TextEdit, LineEdit,TabWidget,ScrollView,Palette,StyleMetrics
 import { ComboBoxScroll } from "ComboBoxScroll.slint";
 import { SideBar } from "side_bar.slint";
 import { RecordPage, RequestPage, StatisticsPage, AnalyzesPage, CategoriesPage, SettingsPage, AboutPage } from "pages/pages.slint";
-import { Logic } from "./globale.slint";
+import { Logic, ReelixPalette } from "./globale.slint";
 
 export { Logic }
 
@@ -29,5 +29,11 @@ export component MainWindow inherits Window {
         if(side-bar.current-item == 4) : CategoriesPage {the_model: the_model;ossupportbox-value: ossupportbox-value;}
         if(side-bar.current-item == 5) : SettingsPage {}
         if(side-bar.current-item == 6) : AboutPage {}
+        init => {                if (Palette.color-scheme == ColorScheme.light){
+            ReelixPalette.night-mode = false;
+        }
+        else{
+            ReelixPalette.night-mode = true;
+        }}
     }
 }

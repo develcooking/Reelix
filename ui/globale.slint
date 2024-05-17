@@ -1,6 +1,12 @@
+import { Palette } from "std-widgets.slint";
 export global Logic {
     callback open-url(string);
     callback cabavalueofcombobox(string);
     callback createtype(string);
     callback ossupport-value(bool);
+}
+export global ReelixPalette  {
+    in property <bool> night-mode: false;
+    out property <color> control-background:root.night-mode ?  #2c2c2c : #d0d0d0;
+   // out property <color> control-background:Palette.control-background;
 }
