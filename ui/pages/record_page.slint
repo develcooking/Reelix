@@ -1,4 +1,5 @@
-import {VerticalBox, ComboBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button} from "std-widgets.slint";
+import {VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button} from "std-widgets.slint";
+import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { Logic } from "../globale.slint";
 
 export component RecordPage inherits Rectangle {
@@ -16,7 +17,7 @@ export component RecordPage inherits Rectangle {
                 spacing: 30px;
     
     
-                 ComboBox {
+                ComboBoxScroll {
                     width: 560px;
                     height: 40px;
                   
