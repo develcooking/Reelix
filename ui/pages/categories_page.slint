@@ -3,7 +3,8 @@ import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { Logic } from "../logics.slint";
 export component CategoriesPage {
     in property <[string]> the_model;
-VerticalBox {
+    in property <bool> ossupportbox-value;
+    VerticalBox {
     HorizontalBox {
     Text {
         horizontal-alignment: center;
@@ -35,11 +36,10 @@ GridBox {
          current-value: "Select a Category to Remove";
         } 
 }
-HorizontalBox {
-            osbox := CheckBox {text: "Support OS selection";}
-            }
-        }
-HorizontalBox {
+Row{
+    osbox := CheckBox {text: "Support OS selection";}
+}
+Row {
     Button {
         text: @tr("Insert into Databank");
         padding: 8px;
@@ -64,5 +64,6 @@ HorizontalBox {
         }
     } 
  }
+}
 }
 }

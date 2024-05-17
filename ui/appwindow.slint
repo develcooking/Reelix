@@ -9,6 +9,7 @@ export { Logic }
 
 export component MainWindow inherits Window {
     in-out property <[string]> the_model;
+    in-out property <bool> ossupportbox-value;
 
     height: 420px;
     width: 820px;
@@ -25,7 +26,7 @@ export component MainWindow inherits Window {
         if(side-bar.current-item == 1) : RequestPage {}
         if(side-bar.current-item == 2) : StatisticsPage {}
         if(side-bar.current-item == 3) : AnalyzesPage {}
-        if(side-bar.current-item == 4) : CategoriesPage {the_model: the_model;}
+        if(side-bar.current-item == 4) : CategoriesPage {the_model: the_model;ossupportbox-value: ossupportbox-value;}
         if(side-bar.current-item == 5) : SettingsPage {}
         if(side-bar.current-item == 6) : AboutPage {}
     }

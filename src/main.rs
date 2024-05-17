@@ -1,6 +1,7 @@
 use slint::{SharedString, VecModel};
 slint::include_modules!();
 use std::rc::Rc;
+use std::cell::RefCell;
 use mysql::*;
 use mysql::prelude::*;
 use lazy_static::lazy_static;
@@ -13,18 +14,36 @@ lazy_static! {
     };
 }
 
-fn fetch_data_from_database() -> Result<Vec<String>, slint::PlatformError> {
+// Struct to hold both bool value and input string
+#[derive(Debug)]
+struct DataBundle {
+    bool_value: Option<bool>,
+    input_string: Option<String>,
+}
+// Struct to hold database records
+#[derive(Debug)]
+struct DatabaseRecord {
+    typen: String,
+    osdep: Option<bool>,
+}
+
+fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformError> {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
-    let types: Vec<String> = conn
+    let records: Vec<DatabaseRecord> = conn
         .query_map(
-            "SELECT Typen FROM Typtabelle ORDER BY Typen ASC",
-            |row: Row| row.get("Typen").unwrap(),
+            "SELECT Typen, osdep FROM Typtabelle ORDER BY Typen ASC",
+            |row: Row| {
+                let typen: String = row.get("Typen").unwrap();
+                let osdep: Option<bool> = row.get("osdep").unwrap();
+                DatabaseRecord { typen, osdep }
+            },
         )
         .map_err(|err| slint::PlatformError::from(format!("MySQL error: {}", err)))?;
 
-    Ok(types)
+    Ok(records)
 }
+
 
 fn remove_data_from_database(valueofcombobox: &str) {
     let mut conn = POOL.get_conn()
@@ -34,51 +53,70 @@ fn remove_data_from_database(valueofcombobox: &str) {
         conn.exec_drop(
             r"DELETE FROM Typtabelle WHERE Typen = ?",
             (&typen,)
-        ).expect("Error while removeing a Category");
+        ).expect("Error while removing a Category");
     
         println!("Data removed successfully!");
     } else {
         println!("Default String to Remove or empty string can't be removed");
     }
-
 }
 
 fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> {
     let data_from_db = fetch_data_from_database()?;
+    let mut shared_typen_strings = Vec::new();
+    let mut shared_osdep_strings = Vec::new(); // Korrekte Initialisierung von shared_osdep_strings
 
-    let mut shared_strings = Vec::new();
-    for typ in data_from_db {
-        shared_strings.push(SharedString::from(typ));
+    for record in data_from_db {
+        shared_typen_strings.push(SharedString::from(record.typen.clone()));
+        // Extrahieren Sie den Wert von record.osdep und fügen Sie ihn zu shared_osdep_strings hinzu
+        if let Some(osdep) = record.osdep {
+            shared_osdep_strings.push(osdep);
+        }
     }
 
-    let model_rc = Rc::new(VecModel::from(shared_strings)).into();
+    let model_rc = Rc::new(VecModel::from(shared_typen_strings)).into();
+
+    // Für jedes Element in shared_osdep_strings ausgeben
+    for osdep in &shared_osdep_strings {
+        println!("Checkbox value: {}", osdep);
+    }
+
     ui.set_the_model(model_rc);
 
     Ok(())
 }
 
-fn createdata(input_text: &str) {
-    let trimmed_text = input_text.trim();
-    let filtered_text = trimmed_text.chars()
-        .collect::<String>();
 
+
+
+fn createdata(data_bundle: &DataBundle) {
     // Get a connection from the connection pool
-    let mut conn = POOL.get_conn()
-        .expect("Failed to get a connection from the pool");
+    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
 
-    println!("Original String: '{}'", input_text);
-    println!("Filtered String: '{}'", filtered_text);
+    // Insert the data into the database if input_string is valid
+    if let Some(input_string) = &data_bundle.input_string {
+        let filtered_text = input_string.trim().to_string();
+        println!("Original String: '{}'", input_string);
+        println!("Received bool_value: {:?}", data_bundle.bool_value);
+        println!("Filtered String: '{}'", filtered_text);
 
-    // Insert the filtered text into the database if it's not empty
-    if !filtered_text.is_empty() {
-        conn.exec_drop(
-            r"INSERT INTO Typtabelle (Typen) VALUES (?)",
-            (&filtered_text,)
-        ).expect("Error inserting data");
+        if let Some(true) | Some(false) = data_bundle.bool_value {
+            // Insert data into database
+            if !filtered_text.is_empty() {
+                conn.exec_drop(
+                    r"INSERT INTO Typtabelle (Typen, osdep) VALUES (?, ?)",
+                    (&filtered_text, data_bundle.bool_value), // Explicitly use true
+                ).expect("Error inserting data");
 
-        println!("Data inserted successfully!");
+                println!("Data inserted successfully!");
+            } else {
+                println!("Empty or whitespace-laden type string not inserted into the database.");
+            }
+        } else {
+            println!("No bool value provided or bool value is None, skipping data insertion.");
+        }
     } else {
-        println!("Empty or whitespace-laden type string not inserted into the database.");
+        println!("Input string is None; cannot insert into database.");
     }
 }
 
@@ -87,30 +125,46 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui_handle = ui.as_weak();
     let _ = update_database_display(&ui);
     
+    // Rc und RefCell für sicheren Zugriff und Mutation der Daten
+    let data_bundle = Rc::new(RefCell::new(DataBundle {
+        bool_value: Some(false),
+        input_string: None,
+    }));
 
     let ui_handle_copy = ui_handle.clone();
+    let ui_handle_copy2 = ui_handle_copy.clone();
+
+    // Integration of ui.on_ossupport_value into event handling
+    let ossupport_data_bundle = Rc::clone(&data_bundle);
+    ui.global::<Logic>().on_ossupport_value(move |ossupport_value: bool| {
+        // Update bool_value in the shared data bundle
+        ossupport_data_bundle.borrow_mut().bool_value = Some(ossupport_value);
+
+        println!("Received ossupport_value: {}", ossupport_value);
+    });
+
+    // Integration of ui.on_createtype into event handling
+    let createtype_data_bundle = Rc::clone(&data_bundle);
+    ui.global::<Logic>().on_createtype(move |newtypeinput: SharedString| {
+        // Update input_string in the shared data bundle
+        createtype_data_bundle.borrow_mut().input_string = Some(newtypeinput.to_string());
+        // Call createdata if both bool_value and input_string are available
+        let data_bundle_ref = createtype_data_bundle.borrow();
+        if let Some(true) | Some(false) = data_bundle_ref.bool_value {
+            createdata(&data_bundle_ref);
+        }
+
+        let _ = update_database_display(&ui_handle_copy.unwrap());
+    });
 
     // Define a closure to create and insert data into the database based on user input
     ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox: SharedString| {
         println!("removed {} from database", valueofcombobox);
         remove_data_from_database(&valueofcombobox);
-        let _ = update_database_display(&ui_handle_copy.unwrap());
+        let _ = update_database_display(&ui_handle_copy2.unwrap());
     });
 
-    ui.global::<Logic>().on_createtype(move |newtypeinput: SharedString| {
-        let extract_string: String = newtypeinput.trim().parse().unwrap();
-        createdata(&extract_string);
-
-        let _ = update_database_display(&ui_handle.unwrap());
-    });
-
-    ui.global::<Logic>().on_ossupport_value({
-        move |ossupport_value|{
-            println! ("bool: {}", ossupport_value);
-        }});
-    
-
-    ui.global::<Logic>().on_open_url(|url: SharedString| {
+     ui.global::<Logic>().on_open_url(|url: SharedString| {
         open::that(url.as_str()).ok();
     });
     
