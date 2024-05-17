@@ -1,64 +1,70 @@
 ## About
-This project trys to replace the "Neelix" programm in the IT-Support. 
-Neelix was written in about 2015-17. The Sourcecode seems to be lost.
-You have to have java installed and an variable set for JAVA_HOME.
-The databankserver uses an out of support Linux system.
+This project aims to replace the "Neelix" program in the IT support of the University of Bamberg. Neelix was written around 2015-2017, and the source code seems to be lost. You need to have Java installed and set a variable for JAVA_HOME. The database server uses an out of supported Linux system.
 
-Reelix wants to redo all this. Written in Rust and uses [Slint](https://slint.dev/) as the UI Framework. Reelix sloud run on every Desktop OS after compilation. Officialy supported is only Linux and Windows.
+Reelix wants to redo all this. Written in Rust and build with [Slint](https://slint.dev/) as the UI Framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
 
 # Things to add
 
  On the Record panel
-- Replace Combobox with ComboboxScroll
-- Operating System selection in sertent categories
-- A text box for editional info
-- Select time for submitting
-- Select place were the issue happend 
-- Select the number of thickets you want to create at once
-- Submitt button 
+- [x] Replace Combobox with ComboboxScroll
+- [ ] Operating System selection in sertent categories (working on backend)
+- [ ] A text box for editional info (lineedit + no backend)
+- [ ] Select time for submitting (no backend)
+- [ ] Select place were the issue happend 
+- [ ] Select the number of thickets you want to create at once
+- [ ] Submitt button (no backend)
 
 On the Request-Log panel
-- Dynamicly Created Table sheet
-- show the latest 20 entrys 
-- ability to load more older once with a extra button
-- ability to remove accidely created once
+- [ ] Dynamicly Created Table sheet
+- [ ] show the latest 20 entrys 
+- [ ] ability to load more older once with a extra button
+- [ ] ability to remove accidely created once
 
 On the Statistics panel
-- Show statisc form the last 7 days
-- optional to ask for a specific date range
-- optional scroll back to the 7 days before the current week
+- [ ] Show statisc form the last 7 days
+- [ ] optional to ask for a specific date range
+- [ ] optional scroll back to the 7 days before the current week
 
 On the Analyzes panel
-- Export sql table to csv or html
-- need to have the ability to select the date range
+- [ ] Export sql table to csv or html
+- [ ] need to have the ability to select the date range
 
 On the Categorie Management panel
-- make the popup solid insted of transperent
-- ComboboxScroll support key inputs
-- ComboboxScroll tab support
+- [x] To Create Categories(Typs)
+- [x] To Delete Categories(Typs)
 
 On the Settings panel
-- ability to set a database timeout
-- ability to set a databse server with IPv4 address (in the future ipv6 and maybe domain name)
-- ability to set a databse port
-- ability to set a databse name
-- ability to set a databse userame
-- ability to set a databse password
+- [ ] ability to set a database timeout
+- [ ] ability to set a databse server with IPv4 address (in the future ipv6 and maybe domain name)
+- [ ] ability to set a databse port
+- [ ] ability to set a databse name
+- [ ] ability to set a databse userame
+- [ ] ability to set a databse password
+- [ ] check if it would work
+- [x] dark/light mode switch
+- [ ] dark/light mode switch state
+- [ ] theme switcher (fluent, cosmic, cupertino)
 
 A Info panel
-- show some stuff about the application 
+- [x]  show some stuff about the application 
 
-and a lot more
+### Independend / Global Issues
 
+CoboboxScroll
+- [x] make the popup solid insted of transperent
+- [x] Scrolling works
+- [x] Theme works on it
+- [ ] ComboboxScroll support key inputs
+- [ ] ComboboxScroll tab support
+
+more things will be added in the future
 
 ## Things done
 - Sql basics, add categories, remove categories, ask for existing categories(see cmd branches and typetesting)
 - Dynamicly create categories (in Gui) see branch combobox
 
-At Categorie Management panel
-- To Create Categories(Typs)
-- To Delete Categories(Typs)
+
 
 ### Things Reelix needs to can:
 Typs must be removeable and addable
