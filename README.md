@@ -13,7 +13,7 @@ Reelix wants to redo all this. Written in Rust and build with [Slint](https://sl
 - [ ] Select time for submitting (no backend)
 - [ ] Select place were the issue happend 
 - [ ] Select the number of thickets you want to create at once
-- [ ] Submitt button (no backend)
+- [x] Submitt button (early stages)
 
 On the Request-Log panel
 - [ ] Dynamicly Created Table sheet

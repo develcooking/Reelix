@@ -12,12 +12,12 @@ export component RecordPage inherits Rectangle {
         GroupBox {
           
     
-            hi := VerticalBox {
+            VerticalBox {
                 alignment: center;
                 spacing: 30px;
     
     
-                ComboBoxScroll {
+                combox := ComboBoxScroll {
                     width: 560px;
                     height: 40px;
                   
@@ -42,6 +42,8 @@ export component RecordPage inherits Rectangle {
             Button {
                 text: "Save Record";
                 primary: true;
+                clicked => {Logic.makerecord(combox.current-value);
+                }
             }
         }
 }
