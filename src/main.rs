@@ -5,6 +5,7 @@ use std::cell::RefCell;
 use mysql::*;
 use mysql::prelude::*;
 use lazy_static::lazy_static;
+use chrono::{Local, Timelike, Datelike};
 
 lazy_static! {
     static ref POOL: Pool = {
@@ -90,9 +91,19 @@ fn sendrequest(current_value_type:  &str){
         // Get a connection from the connection pool
         let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
 
+        let current_datetime = Local::now();
+        // extract Date
+        let year = current_datetime.year();
+        let month = current_datetime.month();
+        let day = current_datetime.day();
+
+        // extract Time
+        let hour = current_datetime.hour();
+        let minute = current_datetime.minute();
+        let second = current_datetime.second();
         let query = "INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)";
-            let date = "2024-05-23";
-            let time = "12:00:00";
+            let date = format!("{}-{}-{}", year, month, day);
+            let time = format!("{}:{}:{}", hour, minute, second);
             let operating_system = "Windows";
             let comment_log = "This is a comment";
             let location = "testing";
