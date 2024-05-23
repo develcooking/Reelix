@@ -10,7 +10,7 @@ Reelix wants to redo all this. Written in Rust and build with [Slint](https://sl
 - [x] Replace Combobox with ComboboxScroll
 - [ ] Operating System selection in sertent categories (working on backend)
 - [ ] A text box for editional info (lineedit + no backend)
-- [ ] Select time for submitting (no backend)
+- [ ] Select time for submitting (can't select yet comming soon)
 - [ ] Select place were the issue happend 
 - [ ] Select the number of thickets you want to create at once
 - [x] Submitt button (early stages)
