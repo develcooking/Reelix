@@ -21,6 +21,13 @@ struct DataBundle {
     bool_value: Option<bool>,
     input_string: Option<String>,
 }
+
+#[derive(Debug)]
+struct Databundlesendreq {
+    comment_string: Option<String>,
+    current_value_type: Option<String>,
+}
+
 // Struct to hold database records
 #[derive(Debug)]
 struct DatabaseRecord {
@@ -45,7 +52,6 @@ fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformErro
     Ok(records)
 }
 
-
 fn remove_data_from_database(valueofcombobox: &str) {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
@@ -65,11 +71,11 @@ fn remove_data_from_database(valueofcombobox: &str) {
 fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> {
     let data_from_db = fetch_data_from_database()?;
     let mut shared_typen_strings = Vec::new();
-    let mut shared_osdep_strings = Vec::new(); // Korrekte Initialisierung von shared_osdep_strings
+    let mut shared_osdep_strings = Vec::new(); // Proper initialization of shared_osdep_strings
 
     for record in data_from_db {
         shared_typen_strings.push(SharedString::from(record.typen.clone()));
-        // Extrahieren Sie den Wert von record.osdep und fügen Sie ihn zu shared_osdep_strings hinzu
+        // Extract the value from record.osdep and add it to shared_osdep_strings
         if let Some(osdep) = record.osdep {
             shared_osdep_strings.push(osdep);
         }
@@ -77,7 +83,7 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
 
     let model_rc = Rc::new(VecModel::from(shared_typen_strings)).into();
 
-    // Für jedes Element in shared_osdep_strings ausgeben
+    // Print each element in shared_osdep_strings
     for osdep in &shared_osdep_strings {
         println!("Checkbox value: {}", osdep);
     }
@@ -91,10 +97,15 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
     Ok(())
 }
 
-fn sendrequest(current_value_type:  &str){
-        // Get a connection from the connection pool
-        let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
+    // Debug output for comment_string and current_value_type
+    println!("sendrequest: Received comment_string: {:?}", data_bundle_sendreq.comment_string);
+    println!("sendrequest: Received current_value_type: {:?}", data_bundle_sendreq.current_value_type);
 
+    // Get a connection from the connection pool
+    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+
+    if let Some(current_value_type) = &data_bundle_sendreq.current_value_type {
         let current_datetime = Local::now();
         // extract Date
         let year = current_datetime.year();
@@ -105,15 +116,18 @@ fn sendrequest(current_value_type:  &str){
         let hour = current_datetime.hour();
         let minute = current_datetime.minute();
         let second = current_datetime.second();
-            let date = format!("{}-{}-{}", year, month, day);
-            let time = format!("{}:{}:{}", hour, minute, second);
-            let operating_system = "Windows";
-            let comment_log = "This is a comment";
-            let location = "testing";
+        let date = format!("{}-{}-{}", year, month, day);
+        let time = format!("{}:{}:{}", hour, minute, second);
+        let operating_system = "Windows";
+        let comment_log = data_bundle_sendreq.comment_string.clone().unwrap_or_else(|| "This is a comment".to_string());
+        let location = "testing";
 
-            conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)", (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
+        conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)", 
+            (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
+    } else {
+        println!("current_value_type is None; cannot insert into database.");
+    }
 }
-
 
 fn createdata(data_bundle: &DataBundle) {
     // Get a connection from the connection pool
@@ -151,10 +165,16 @@ fn main() -> Result<(), slint::PlatformError> {
     let ui_handle = ui.as_weak();
     let _ = update_database_display(&ui);
     
-    // Rc und RefCell für sicheren Zugriff und Mutation der Daten
+    // Rc and RefCell for safe access and mutation of the data
     let data_bundle = Rc::new(RefCell::new(DataBundle {
         bool_value: Some(false),
         input_string: None,
+    }));
+
+    // Rc and RefCell for safe access and mutation of the data
+    let data_bundle_sendreq = Rc::new(RefCell::new(Databundlesendreq {
+        comment_string: None,
+        current_value_type: None,
     }));
 
     let ui_handle_copy = ui_handle.clone();
@@ -191,16 +211,26 @@ fn main() -> Result<(), slint::PlatformError> {
         let _ = update_database_display(&ui_handle_copy2.unwrap());
     });
 
-    // Define a closure to create and insert data into the database based on user input
-    ui.global::<Logic>().on_makerecord(move |current_value: SharedString| {
-        println!("value of record is: {}", current_value);
-        sendrequest(&current_value);
+    let commentrequest_data_bundle = Rc::clone(&data_bundle_sendreq);
+    ui.global::<Logic>().on_commentrequest(move |comment: SharedString| {
+        commentrequest_data_bundle.borrow_mut().comment_string = Some(comment.to_string());
+        println!("value of comment is: {}", comment);
     });
 
-     ui.global::<Logic>().on_open_url(|url: SharedString| {
+    let makerecord_data_bundle = Rc::clone(&data_bundle_sendreq);
+    ui.global::<Logic>().on_makerecord(move |current_value: SharedString| {
+        // Update current_value_type and ensure comment_string is set before calling sendrequest
+        {
+            let mut bundle = makerecord_data_bundle.borrow_mut();
+            bundle.current_value_type = Some(current_value.to_string());
+            println!("value of record is: {}", current_value);
+        }
+        sendrequest(&makerecord_data_bundle.borrow());
+    });
+
+    ui.global::<Logic>().on_open_url(|url: SharedString| {
         open::that(url.as_str()).ok();
     });
-    
 
     ui.run()?;
     Ok(())
