@@ -30,9 +30,9 @@ export component RecordPage inherits Rectangle {
                 }
 
             }
-                LineEdit {
+                comment := LineEdit {
                 text: "";
-                placeholder-text: "For inquiries regarding forms, room and personal information and lost property.";
+                placeholder-text: "Place your Comment into here";
                 
                 preferred-height: root.height;
             }
@@ -43,7 +43,9 @@ export component RecordPage inherits Rectangle {
             Button {
                 text: "Save Record";
                 primary: true;
-                clicked => {Logic.makerecord(combox.current-value);
+                clicked => {
+                    Logic.commentrequest(comment.text);
+                    Logic.makerecord(combox.current-value);
                 }
             }
         }
