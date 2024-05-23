@@ -86,7 +86,19 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
     Ok(())
 }
 
+fn sendrequest(current_value_type:  &str){
+        // Get a connection from the connection pool
+        let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
 
+        let query = "INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)";
+            let date = "2024-05-23";
+            let time = "12:00:00";
+            let operating_system = "Windows";
+            let comment_log = "This is a comment";
+            let location = "testing";
+
+            conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)", (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
+}
 
 
 fn createdata(data_bundle: &DataBundle) {
@@ -132,7 +144,8 @@ fn main() -> Result<(), slint::PlatformError> {
     }));
 
     let ui_handle_copy = ui_handle.clone();
-    let ui_handle_copy2 = ui_handle_copy.clone();
+    let ui_handle_copy2 = ui_handle.clone();
+    let ui_handle_copy3 = ui_handle.clone();
 
     // Integration of ui.on_ossupport_value into event handling
     let ossupport_data_bundle = Rc::clone(&data_bundle);
@@ -162,6 +175,12 @@ fn main() -> Result<(), slint::PlatformError> {
         println!("removed {} from database", valueofcombobox);
         remove_data_from_database(&valueofcombobox);
         let _ = update_database_display(&ui_handle_copy2.unwrap());
+    });
+
+    // Define a closure to create and insert data into the database based on user input
+    ui.global::<Logic>().on_makerecord(move |current_value: SharedString| {
+        println!("value of record is: {}", current_value);
+        sendrequest(&current_value);
     });
 
      ui.global::<Logic>().on_open_url(|url: SharedString| {
