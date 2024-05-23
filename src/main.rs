@@ -119,15 +119,25 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
         let date = format!("{}-{}-{}", year, month, day);
         let time = format!("{}:{}:{}", hour, minute, second);
         let operating_system = "Windows";
-        let comment_log = data_bundle_sendreq.comment_string.clone().unwrap_or_else(|| "This is a comment".to_string());
+
+        // Check if the comment is None, empty or contains only whitespace
+        let comment_log = data_bundle_sendreq
+            .comment_string
+            .as_ref()
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+            .map(String::from)
+            .unwrap_or_else(|| "NONE".to_string());
+
         let location = "testing";
 
-        conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)", 
+        conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)",
             (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
     } else {
         println!("current_value_type is None; cannot insert into database.");
     }
 }
+
 
 fn createdata(data_bundle: &DataBundle) {
     // Get a connection from the connection pool
