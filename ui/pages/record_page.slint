@@ -4,6 +4,7 @@ import { Logic } from "../globale.slint";
 
 export component RecordPage inherits Rectangle {
     in property <[string]> the_model;
+    in-out property <string> thedate;
    HorizontalBox {
     alignment: center;    
     VerticalBox {
@@ -37,7 +38,7 @@ export component RecordPage inherits Rectangle {
             }
             HorizontalBox {
             Button {
-                text: "Date";
+                text: thedate;
             }
             Button {
                 text: "Save Record";

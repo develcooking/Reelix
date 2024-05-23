@@ -83,6 +83,10 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
     }
 
     ui.set_the_model(model_rc);
+    let current_datetime = Local::now();
+    let date = current_datetime.format("%Y-%m-%d").to_string();
+    let shared_date = SharedString::from(date);
+    ui.set_thedate(shared_date.into());
 
     Ok(())
 }
@@ -101,7 +105,6 @@ fn sendrequest(current_value_type:  &str){
         let hour = current_datetime.hour();
         let minute = current_datetime.minute();
         let second = current_datetime.second();
-        let query = "INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)";
             let date = format!("{}-{}-{}", year, month, day);
             let time = format!("{}:{}:{}", hour, minute, second);
             let operating_system = "Windows";
