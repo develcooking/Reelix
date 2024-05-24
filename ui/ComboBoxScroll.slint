@@ -1,11 +1,12 @@
 import { ScrollView, Palette, HorizontalBox } from "std-widgets.slint";
 import { ReelixPalette } from "./globale.slint";
+
 export component ComboBoxScroll {
     in property <[string]> model;
     in-out property <int> current-index: 0;
     in-out property <string> current-value: root.model[root.current-index];
     out property <bool> has-focus;
-    
+
     Rectangle {
         background: Palette.control-background;
         border-radius: 3px;
@@ -33,12 +34,11 @@ export component ComboBoxScroll {
     }
 
     popup := PopupWindow {
-        x:0;
-        y: root.height; //wana use y: -4px; but transperent
+        x: 0;
+        y: root.height; // want to use y: -4px; but transparent
         width: root.width;
         height: min(inner.preferred-height, 230px);
-        
-        
+
         Rectangle {
             background: ReelixPalette.control-background;
             border-radius: 3px;
