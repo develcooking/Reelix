@@ -1,36 +1,35 @@
 import { VerticalBox, Palette, HorizontalBox } from "std-widgets.slint";
 import { ReelixPalette } from "./globale.slint";
 
-
-
-
 export component RadioButton {
     in-out property <bool> checked;
     in-out property text <=> t.text;
     callback clicked <=> RadioButton.clicked;
- RadioButton := TouchArea {
-    HorizontalLayout {
-        spacing: 5px;
-        VerticalLayout {
-            alignment: center;
-            Rectangle {
-                width: 20px;
-                height: 20px;
-                border-width: 1.5px;
-                border-color: RadioButton.has-hover ? Palette.border : transparent;
-                border-radius: RadioButton.width / 2;
-                background: RadioButton.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
-                if checked : Rectangle {
-                    background: RadioButton.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
+
+    RadioButton := TouchArea {
+        HorizontalLayout {
+            spacing: 5px;
+            VerticalLayout {
+                alignment: center;
+                Rectangle {
+                    width: 20px;
+                    height: 20px;
+                    border-width: 1.5px;
+                    border-color: RadioButton.has-hover ? Palette.border : transparent;
                     border-radius: RadioButton.width / 2;
-                    width: parent.width / 2;
-                    height: parent.width / 2;
-                    x: parent.width / 4;
-                    y: parent.width / 4;
+                    background: RadioButton.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
+
+                    if checked : Rectangle {
+                        background: RadioButton.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
+                        border-radius: RadioButton.width / 2;
+                        width: parent.width / 2;
+                        height: parent.width / 2;
+                        x: parent.width / 4;
+                        y: parent.width / 4;
+                    }
                 }
             }
+            t := Text {}
         }
-        t := Text {}
     }
-}
 }

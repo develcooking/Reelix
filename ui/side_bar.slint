@@ -40,7 +40,7 @@ component SideBarItem inherits Rectangle {
 
         label := Text {
             vertical-alignment: center;
-         }
+        }
     }
 
     touch := TouchArea {
@@ -67,24 +67,24 @@ export component SideBar inherits Rectangle {
         fs := FocusScope {
             key-pressed(event) => {
                 if (event.text == "\n") {
-                     root.current-item = root.current-focused;
-                     return accept;
+                    root.current-item = root.current-focused;
+                    return accept;
                 }
                 if (event.text == Key.UpArrow) {
-                     self.focused-tab = Math.max(self.focused-tab - 1,  0);
-                     return accept;
+                    self.focused-tab = Math.max(self.focused-tab - 1, 0);
+                    return accept;
                 }
                 if (event.text == Key.DownArrow) {
-                     self.focused-tab = Math.min(self.focused-tab + 1, root.model.length - 1);
-                     return accept;
+                    self.focused-tab = Math.min(self.focused-tab + 1, root.model.length - 1);
+                    return accept;
                 }
                 return reject;
             }
 
             key-released(event) => {
                 if (event.text == " ") {
-                     root.current-item = root.current-focused;
-                     return accept;
+                    root.current-item = root.current-focused;
+                    return accept;
                 }
                 return reject;
             }
@@ -101,15 +101,13 @@ export component SideBar inherits Rectangle {
         padding-right: 0px;
         alignment: start;
 
+        labeltitle := Text {
+            horizontal-alignment: center;
+            font-size: 18px;
+            vertical-alignment: center;
+            height: root.height / 12;
+        }
 
-                 labeltitle := Text {
-                    horizontal-alignment: center;
-                    font-size: 18px;
-                    vertical-alignment: center;
-                    height: root.height/12;
-                } 
-
-    
         label := Text {
             font-size: 16px;
             horizontal-alignment: center;
@@ -133,7 +131,7 @@ export component SideBar inherits Rectangle {
                 padding-bottom: 0px;
 
                 @children
-             }
+            }
         }
     }
 }

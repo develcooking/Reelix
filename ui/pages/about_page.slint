@@ -1,20 +1,20 @@
-import {AboutSlint, VerticalBox} from "std-widgets.slint";
+import { AboutSlint, VerticalBox } from "std-widgets.slint";
 import { Logic } from "../globale.slint";
 
 export component AboutPage {
-
-
     VerticalBox {
         Text {
             text: @tr("Product: Reelix (Working title)\nVersion: 0.0.3 (extreme Alpha)");
-        }                    Text {
+        }
+        Text {
             text: @tr("Developed by: Jan-Peter Friebe\n At the University of Bamberg");
         }
         Text {
             text: "https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/";
             color: lightblue;
-
-            TouchArea { clicked => { Logic.open-url(parent.text); } }
+            TouchArea {
+                clicked => { Logic.open-url(parent.text); }
+            }
         }
         AboutSlint {
             max-width: 256px;

@@ -1,4 +1,4 @@
-import {StandardTableView, HorizontalBox, GroupBox} from "std-widgets.slint";
+import { StandardTableView, HorizontalBox, GroupBox } from "std-widgets.slint";
 
 export component RequestPage inherits Window {
     HorizontalBox {
@@ -8,30 +8,34 @@ export component RequestPage inherits Window {
             title: @tr("Request-Log");
             vertical-stretch: 0;
    
-    StandardTableView {
-
-        columns: [
-            { title: "ID" },
-            { title: "Datum" },
-            { title: "Zeit" },
-            { title: "Anfragentyp" },
-            { title: "Betriebssystem" },
-            { title: "Kommentar" },
-            { title: "Ort" },
-
-        ];
-        rows: [
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ],
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ],
-            [
-                { text: "Item 1" }, { text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },{ text: "Item 2" },
-            ]
-        ];
-    }
-}
+            StandardTableView {
+                columns: [
+                    { title: "ID" },
+                    { title: "Datum" },
+                    { title: "Zeit" },
+                    { title: "Anfragentyp" },
+                    { title: "Betriebssystem" },
+                    { title: "Kommentar" },
+                    { title: "Ort" },
+                ];
+                rows: [
+                    [
+                        { text: "Item 1" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" },
+                    ],
+                    [
+                        { text: "Item 1" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" },
+                    ],
+                    [
+                        { text: "Item 1" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" }, { text: "Item 2" }, { text: "Item 2" },
+                        { text: "Item 2" },
+                    ]
+                ];
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-import {VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button} from "std-widgets.slint";
+import { VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { RadioButton } from "../RadioButton.slint";
 import { Logic } from "../globale.slint";
@@ -6,58 +6,58 @@ import { Logic } from "../globale.slint";
 export component RecordPage inherits Rectangle {
     in property <[string]> the_model;
     in-out property <string> thedate;
-   HorizontalBox {
-    alignment: center;    
-    VerticalBox {
-        alignment: start;
-    
-        GroupBox {
-          
-    
-            VerticalBox {
-                alignment: center;
-                spacing: 30px;
-    
-    
-                combox := ComboBoxScroll {
-                    width: 560px;
-                    height: 40px;
-                  
-                    model: the_model;
-                }            Text {
-                    text: @tr("Under Construction doesn't work yet");
-                }
-    
-                }
 
+    HorizontalBox {
+        alignment: center;
+        
+        VerticalBox {
+            alignment: start;
+            
+            GroupBox {
+                VerticalBox {
+                    alignment: center;
+                    spacing: 30px;
+
+                    combox := ComboBoxScroll {
+                        width: 560px;
+                        height: 40px;
+                        model: the_model;
+                    }
+
+                    Text {
+                        text: @tr("Under Construction doesn't work yet");
+                    }
+                }
             }
-                comment := LineEdit {
+
+            comment := LineEdit {
                 text: "";
                 placeholder-text: "Place your Comment into here";
-                
                 preferred-height: root.height;
             }
+            
             HorizontalBox {
-            Button {
-                text: thedate;
-            }
-            HorizontalBox {
-                function unsel() { r1.checked = false; r2.checked = false; r3.checked = false; }
-                alignment: center;
-                r1 := RadioButton { text: "RZ";         checked: true;  clicked => { unsel(); r1.checked = true; Logic.location(self.text)} init () => {unsel(); r1.checked = true; Logic.location(self.text)} }
-                r2 := RadioButton { text: "TB:lokal";                   clicked => { unsel(); r2.checked = true; Logic.location(self.text)} }
-                r3 := RadioButton { text: "TB:tel/OTRS";                clicked => { unsel(); r3.checked = true; Logic.location(self.text)} }
-            }
-            Button {
-                text: "Save Record";
-                primary: true;
-                clicked => {
-                    Logic.commentrequest(comment.text);
-                    Logic.makerecord(combox.current-value);
+                Button {
+                    text: thedate;
+                }
+
+                HorizontalBox {
+                    function unsel() { r1.checked = false; r2.checked = false; r3.checked = false; }
+                    alignment: center;
+                    r1 := RadioButton { text: "RZ"; checked: true; clicked => { unsel(); r1.checked = true; Logic.location(self.text) } init () => { unsel(); r1.checked = true; Logic.location(self.text) } }
+                    r2 := RadioButton { text: "TB:lokal"; clicked => { unsel(); r2.checked = true; Logic.location(self.text) } }
+                    r3 := RadioButton { text: "TB:tel/OTRS"; clicked => { unsel(); r3.checked = true; Logic.location(self.text) } }
+                }
+
+                Button {
+                    text: "Save Record";
+                    primary: true;
+                    clicked => {
+                        Logic.commentrequest(comment.text);
+                        Logic.makerecord(combox.current-value);
+                    }
                 }
             }
         }
-}
-}   
-      
     }
+}
