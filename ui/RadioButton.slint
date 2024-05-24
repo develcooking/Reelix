@@ -4,9 +4,11 @@ import { ReelixPalette } from "./globale.slint";
 
 
 
-export RadioButton := TouchArea {
-    property <bool> checked;
-    property text <=> t.text;
+export component RadioButton {
+    in-out property <bool> checked;
+    in-out property text <=> t.text;
+    callback clicked <=> RadioButton.clicked;
+ RadioButton := TouchArea {
     HorizontalLayout {
         spacing: 5px;
         VerticalLayout {
@@ -15,12 +17,12 @@ export RadioButton := TouchArea {
                 width: 20px;
                 height: 20px;
                 border-width: 1.5px;
-                border-color: root.has-hover ? Palette.border : transparent;
-                border-radius: width / 2;
-                background: root.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
+                border-color: RadioButton.has-hover ? Palette.border : transparent;
+                border-radius: RadioButton.width / 2;
+                background: RadioButton.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
                 if checked : Rectangle {
-                    background: root.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
-                    border-radius: width / 2;
+                    background: RadioButton.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
+                    border-radius: RadioButton.width / 2;
                     width: parent.width / 2;
                     height: parent.width / 2;
                     x: parent.width / 4;
@@ -30,4 +32,5 @@ export RadioButton := TouchArea {
         }
         t := Text {}
     }
+}
 }
