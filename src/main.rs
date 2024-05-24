@@ -26,7 +26,8 @@ struct DataBundle {
 struct Databundlesendreq {
     comment_string: Option<String>,
     current_value_type: Option<String>,
-    current_location: Option<String>
+    current_location: Option<String>,
+    operating_system: Option<String>,
 }
 
 // Struct to hold database records
@@ -99,15 +100,15 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
 }
 
 fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
-    // Debug output for comment_string, current_value_type, and current_location
     println!("sendrequest: Received comment_string: {:?}", data_bundle_sendreq.comment_string);
     println!("sendrequest: Received current_value_type: {:?}", data_bundle_sendreq.current_value_type);
     println!("sendrequest: Received current_location: {:?}", data_bundle_sendreq.current_location);
+    println!("sendrequest: Received operating_system: {:?}", data_bundle_sendreq.operating_system); // Hinzugefügt
 
     // Get a connection from the connection pool
     let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
 
-    if let Some(current_value_type) = &data_bundle_sendreq.current_value_type {
+    if let (Some(current_value_type), Some(operating_system)) = (&data_bundle_sendreq.current_value_type, &data_bundle_sendreq.operating_system) {
         let current_datetime = Local::now();
         // extract Date
         let year = current_datetime.year();
@@ -118,16 +119,16 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
         let hour = current_datetime.hour();
         let minute = current_datetime.minute();
         let second = current_datetime.second();
+
         let date = format!("{}-{}-{}", year, month, day);
         let time = format!("{}:{}:{}", hour, minute, second);
-        let operating_system = "Windows";
 
         // Check if the comment is None, empty or contains only whitespace
         let comment_log = data_bundle_sendreq
-        .comment_string
-        .as_ref()
-        .map(|s| s.trim().to_string())
-        .unwrap_or_else(|| String::new());
+            .comment_string
+            .as_ref()
+            .map(|s| s.trim().to_string())
+            .unwrap_or_else(|| String::new());
 
         // Use current_location from data_bundle_sendreq
         let location = data_bundle_sendreq
@@ -192,6 +193,7 @@ fn main() -> Result<(), slint::PlatformError> {
         comment_string: None,
         current_value_type: None,
         current_location: None,
+        operating_system: None
     }));
 
     let ui_handle_copy = ui_handle.clone();
@@ -250,6 +252,14 @@ fn main() -> Result<(), slint::PlatformError> {
             let mut bundle = location_data_bundle.borrow_mut();
             bundle.current_location = Some(location.to_string());
             println!("value of location is: {}", location);
+        }
+    });
+    let operating_system_data_bundle = Rc::clone(&data_bundle_sendreq);
+    ui.global::<Logic>().on_OperatingSystem(move |os: SharedString| {
+        {
+            let mut bundle = operating_system_data_bundle.borrow_mut();
+            bundle.operating_system = Some(os.to_string());
+            println!("value of operating system is: {}", os);
         }
     });
 

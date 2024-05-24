@@ -1,31 +1,50 @@
 import { VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
-import { RadioButton } from "../RadioButton.slint";
+import { RadioButton, RadioBoxes } from "../RadioButton.slint";
 import { Logic } from "../globale.slint";
-
 export component RecordPage inherits Rectangle {
     in property <[string]> the_model;
     in-out property <string> thedate;
 
     HorizontalBox {
         alignment: center;
-        
+        padding: 5px;
         VerticalBox {
-            alignment: start;
-            
             GroupBox {
                 VerticalBox {
                     alignment: center;
                     spacing: 30px;
-
-                    combox := ComboBoxScroll {
-                        width: 560px;
-                        height: 40px;
-                        model: the_model;
+                    HorizontalBox {
+                        alignment: center;
+                        padding-top: -20px;
+                        combox := ComboBoxScroll {
+                            width: 560px;
+                            height: 40px;
+                            model: the_model;
+                        }
                     }
 
-                    Text {
-                        text: @tr("Under Construction doesn't work yet");
+                    HorizontalBox {
+                        padding-top: -15px;
+                        padding-bottom: -5px;
+                        function unsel() {
+                            b_indipendent.checked = false;
+                            b_win.checked = false;
+                            b_linux.checked = false;
+                            b_macos.checked = false;
+                            b_iOSiPadOS.checked = false;
+                            b_android.checked = false;
+                            b_others.checked = false;
+                        }
+
+                        alignment: stretch;
+                        b_indipendent := RadioBoxes { text: "Independent"; checked: true; clicked => { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text) } init () => { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_win := RadioBoxes { text: "Windows"; clicked => { unsel(); b_win.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_linux := RadioBoxes { text: "Linux"; clicked => { unsel(); b_linux.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_macos := RadioBoxes { text: "MacOS"; clicked => { unsel(); b_macos.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_iOSiPadOS := RadioBoxes { text: "iOS/iPadOS"; clicked => { unsel(); b_iOSiPadOS.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_android := RadioBoxes { text: "Android"; clicked => { unsel(); b_android.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_others := RadioBoxes { text: "Others"; clicked => { unsel(); b_others.checked = true; Logic.OperatingSystem(self.text) } }
                     }
                 }
             }
@@ -35,7 +54,7 @@ export component RecordPage inherits Rectangle {
                 placeholder-text: "Place your Comment into here";
                 preferred-height: root.height;
             }
-            
+
             HorizontalBox {
                 Button {
                     text: thedate;
