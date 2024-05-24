@@ -9,9 +9,9 @@ Reelix wants to redo all this. Written in Rust and build with [Slint](https://sl
  On the Record panel
 - [x] Replace Combobox with ComboboxScroll
 - [ ] Operating System selection in sertent categories (working on backend)
-- [ ] A text box for editional info (lineedit + no backend)
+- [x] A text box for comment info (Implemented with Lineedit waiting for upstream for textbox placeholder)
 - [ ] Select time for submitting (can't select yet comming soon)
-- [ ] Select place were the issue happend 
+- [x] Select place were the issue happend (Ui colors need to be worked on)
 - [ ] Select the number of thickets you want to create at once
 - [x] Submitt button (early stages)
 
@@ -45,6 +45,7 @@ On the Settings panel
 - [x] dark/light mode switch
 - [ ] dark/light mode switch state
 - [ ] theme switcher (fluent, cosmic, cupertino)
+- [ ] language selection
 
 A Info panel
 - [x]  show some stuff about the application 
@@ -57,7 +58,9 @@ CoboboxScroll
 - [x] Theme works on it
 - [ ] ComboboxScroll support key inputs
 - [ ] ComboboxScroll tab support
-
+- [ ] Accessibility for blind people
+- [ ] Hight contrast mode
+- [ ] Multilanguage support
 more things will be added in the future
 
 ## Things done
