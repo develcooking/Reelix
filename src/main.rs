@@ -124,12 +124,10 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
 
         // Check if the comment is None, empty or contains only whitespace
         let comment_log = data_bundle_sendreq
-            .comment_string
-            .as_ref()
-            .map(|s| s.trim())
-            .filter(|s| !s.is_empty())
-            .map(String::from)
-            .unwrap_or_else(|| "NONE".to_string());
+        .comment_string
+        .as_ref()
+        .map(|s| s.trim().to_string())
+        .unwrap_or_else(|| String::new());
 
         // Use current_location from data_bundle_sendreq
         let location = data_bundle_sendreq
@@ -198,7 +196,6 @@ fn main() -> Result<(), slint::PlatformError> {
 
     let ui_handle_copy = ui_handle.clone();
     let ui_handle_copy2 = ui_handle.clone();
-    let ui_handle_copy3 = ui_handle.clone();
 
     // Integration of ui.on_ossupport_value into event handling
     let ossupport_data_bundle = Rc::clone(&data_bundle);
