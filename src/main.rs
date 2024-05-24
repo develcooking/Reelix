@@ -26,6 +26,7 @@ struct DataBundle {
 struct Databundlesendreq {
     comment_string: Option<String>,
     current_value_type: Option<String>,
+    current_location: Option<String>
 }
 
 // Struct to hold database records
@@ -98,9 +99,10 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
 }
 
 fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
-    // Debug output for comment_string and current_value_type
+    // Debug output for comment_string, current_value_type, and current_location
     println!("sendrequest: Received comment_string: {:?}", data_bundle_sendreq.comment_string);
     println!("sendrequest: Received current_value_type: {:?}", data_bundle_sendreq.current_value_type);
+    println!("sendrequest: Received current_location: {:?}", data_bundle_sendreq.current_location);
 
     // Get a connection from the connection pool
     let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
@@ -129,7 +131,14 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
             .map(String::from)
             .unwrap_or_else(|| "NONE".to_string());
 
-        let location = "testing";
+        // Use current_location from data_bundle_sendreq
+        let location = data_bundle_sendreq
+            .current_location
+            .as_ref()
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+            .map(String::from)
+            .unwrap_or_else(|| "UNKNOWN".to_string()); // Default to "UNKNOWN" if location is None or empty
 
         conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)",
             (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
@@ -137,7 +146,6 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
         println!("current_value_type is None; cannot insert into database.");
     }
 }
-
 
 fn createdata(data_bundle: &DataBundle) {
     // Get a connection from the connection pool
@@ -185,6 +193,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let data_bundle_sendreq = Rc::new(RefCell::new(Databundlesendreq {
         comment_string: None,
         current_value_type: None,
+        current_location: None,
     }));
 
     let ui_handle_copy = ui_handle.clone();
@@ -229,13 +238,22 @@ fn main() -> Result<(), slint::PlatformError> {
 
     let makerecord_data_bundle = Rc::clone(&data_bundle_sendreq);
     ui.global::<Logic>().on_makerecord(move |current_value: SharedString| {
-        // Update current_value_type and ensure comment_string is set before calling sendrequest
+        // Update current_value_type and ensure comment_string and current_location are set before calling sendrequest
         {
             let mut bundle = makerecord_data_bundle.borrow_mut();
             bundle.current_value_type = Some(current_value.to_string());
             println!("value of record is: {}", current_value);
         }
         sendrequest(&makerecord_data_bundle.borrow());
+    });
+
+    let location_data_bundle = Rc::clone(&data_bundle_sendreq);
+    ui.global::<Logic>().on_location(move |location: SharedString| {
+        {
+            let mut bundle = location_data_bundle.borrow_mut();
+            bundle.current_location = Some(location.to_string());
+            println!("value of location is: {}", location);
+        }
     });
 
     ui.global::<Logic>().on_open_url(|url: SharedString| {

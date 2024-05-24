@@ -1,5 +1,6 @@
 import {VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button} from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
+import { RadioButton } from "../RadioButton.slint";
 import { Logic } from "../globale.slint";
 
 export component RecordPage inherits Rectangle {
@@ -39,6 +40,13 @@ export component RecordPage inherits Rectangle {
             HorizontalBox {
             Button {
                 text: thedate;
+            }
+            HorizontalBox {
+                function unsel() { r1.checked = false; r2.checked = false; r3.checked = false; }
+                alignment: center;
+                r1 := RadioButton { text: "RZ";         checked: true;  clicked => { unsel(); r1.checked = true; Logic.location(self.text)} }
+                r2 := RadioButton { text: "TB:lokal";                   clicked => { unsel(); r2.checked = true; Logic.location(self.text)} }
+                r3 := RadioButton { text: "TB:tel/OTRS";                clicked => { unsel(); r3.checked = true; Logic.location(self.text)} }
             }
             Button {
                 text: "Save Record";
