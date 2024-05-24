@@ -8,7 +8,7 @@ Reelix wants to redo all this. Written in Rust and build with [Slint](https://sl
 
  On the Record panel
 - [x] Replace Combobox with ComboboxScroll
-- [ ] Operating System selection in sertent categories (working on backend)
+- [x] Operating System selection in sertent categories (doesn't disable if Support OS selection is deactivated )
 - [x] A text box for comment info (Implemented with Lineedit waiting for upstream for textbox placeholder)
 - [ ] Select time for submitting (can't select yet comming soon)
 - [x] Select place were the issue happend (Ui colors need to be worked on)
@@ -61,6 +61,8 @@ CoboboxScroll
 - [ ] Accessibility for blind people
 - [ ] Hight contrast mode
 - [ ] Multilanguage support
+- [ ] full keyboard support
+- [ ] shortcuts to pannels
 more things will be added in the future
 
 ## Things done

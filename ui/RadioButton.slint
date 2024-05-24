@@ -33,3 +33,37 @@ export component RadioButton {
         }
     }
 }
+
+export component RadioBoxes {
+    in-out property <bool> checked;
+    in-out property text <=> t.text;
+    callback clicked <=> RadioBoxes.clicked;
+
+    RadioBoxes := TouchArea {
+        HorizontalLayout {
+            spacing: 5px;
+            VerticalLayout {
+                alignment: center;
+                Rectangle {
+                    width: 75px;
+                    height: 32.5px;
+                    border-width: 1.5px;
+                    border-color: RadioBoxes.has-hover ? Palette.border : transparent;
+                    border-radius: 2px;
+                    background: RadioBoxes.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
+                    t := Text {
+                        font-size: 12px;
+                    }
+                    if checked : Rectangle {
+                        background: RadioBoxes.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
+                        border-radius: 2px;
+                     //   width: parent.width / 2;
+                    //    height: parent.width / 2;
+                      //  x: parent.width / 4;
+                     //   y: parent.width / 4;
+                    }
+                }
+            }
+        }
+    }
+}
