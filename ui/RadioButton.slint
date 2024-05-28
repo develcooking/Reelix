@@ -1,5 +1,123 @@
 import { VerticalBox, Palette, HorizontalBox } from "std-widgets.slint";
-import { ReelixPalette } from "./globale.slint";
+import { ReelixPalette,ReelixFontSettings, FocusBorder, Others } from "./globale.slint";
+export { FocusBorder }
+export component RadioBoxes {
+    in property <string> text;
+    in property <image> icon;
+    in property <bool> primary;
+    in property <bool> enabled <=> i-touch-area.enabled;
+    in property <bool> checkable;
+    in property <bool> colorize-icon;
+    out property <bool> has-focus: i-focus-scope.has-focus;
+    out property <bool> pressed: self.enabled && i-touch-area.pressed;
+    in-out property <bool> checked;
+
+    callback clicked;
+
+    private property <brush> text-color: primary || checked ? ReelixPalette.accent-foreground : ReelixPalette.control-foreground;
+
+    min-width: max(32px, i-layout.min-width);
+    min-height: max(32px, i-layout.min-height);
+    horizontal-stretch: 0;
+    vertical-stretch: 0;
+    forward-focus: i-focus-scope;
+
+    accessible-role: button;
+    accessible-checkable: root.checkable;
+    accessible-checked: root.checked;
+    accessible-label: root.text;
+    accessible-action-default => { i-touch-area.clicked(); }
+
+    states [
+        disabled when !root.enabled : {
+            i-background.background: root.primary || root.checked ? ReelixPalette.accent-disabled : ReelixPalette.control-disabled;
+            i-border.border-color: root.primary || root.checked ? transparent : ReelixPalette.border;
+            root.text-color: root.primary || root.checked ? ReelixPalette.text-accent-foreground-disabled : ReelixPalette.text-disabled;
+        }
+        pressed when root.pressed : {
+            i-background.background: root.primary || root.checked ? ReelixPalette.tertiary-accent-background : ReelixPalette.control-tertiary;
+            i-border.border-color: ReelixPalette.border;
+            root.text-color: root.primary || root.checked ? ReelixPalette.text-accent-foreground-secondary : ReelixPalette.text-secondary;
+        }
+        hover when i-touch-area.has-hover : {
+            i-background.background: root.primary || root.checked ? ReelixPalette.secondary-accent-background : ReelixPalette.control-secondary;
+        }
+        checked when root.checked : {
+            i-background.background: ReelixPalette.accent-background;
+            i-border.border-color: ReelixPalette.accent-control-border;
+            root.text-color: ReelixPalette.accent-foreground;
+        }
+    ]
+
+    i-background := Rectangle {
+        border-radius: 4px;
+        background: root.primary ? ReelixPalette.accent-background : ReelixPalette.control-background;
+
+        animate background, border-color { duration: 150ms; }
+
+        i-border := Rectangle {
+            border-radius: parent.border-radius;
+            border-width: 1px;
+            border-color: root.primary ? ReelixPalette.accent-control-border : ReelixPalette.control-border;
+        }
+
+        i-layout := HorizontalLayout {
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            spacing: 4px;
+            alignment: center;
+
+            if (root.icon.width > 0 && root.icon.height > 0) : Image {
+                y: (parent.height - self.height) / 2;
+                source <=> root.icon;
+                width: 20px;
+                colorize: root.colorize-icon ? root.text-color : transparent;
+            }
+
+            if (root.text != ""): Text {
+                font-size: ReelixFontSettings.body.font-size;
+                font-weight: ReelixFontSettings.body.font-weight;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                text: root.text;
+                color: root.text-color;
+                animate color { duration: 150ms; }
+                accessible-role: none;
+            }
+        }
+    }
+
+    i-touch-area := TouchArea {
+        clicked => {
+            if (root.checkable) {
+                root.checked = !root.checked;
+            }
+            root.clicked();
+        }
+    }
+
+    i-focus-scope := FocusScope {
+        x: 0;
+        width: 0; // Do not react on clicks
+        enabled <=> root.enabled;
+
+        key-pressed(event) => {
+            if (event.text == " " || event.text == "\n") {
+                i-touch-area.clicked();
+                 return accept;
+            }
+
+            return reject;
+        }
+    }
+
+    // focus border
+    if (root.has-focus && root.enabled) : FocusBorder {
+        border-radius: i-background.border-radius;
+    }
+}
 
 export component RadioButton {
     in-out property <bool> checked;
@@ -15,12 +133,12 @@ export component RadioButton {
                     width: 20px;
                     height: 20px;
                     border-width: 1.5px;
-                    border-color: RadioButton.has-hover ? Palette.border : transparent;
+                    border-color: RadioButton.has-hover ? Palette.border : Palette.border.darker(50%) ;
                     border-radius: RadioButton.width / 2;
-                    background: RadioButton.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
+                    background: RadioButton.pressed ? ReelixPalette.control-foreground.transparentize(90%) : Palette.control-background;
 
                     if checked : Rectangle {
-                        background: RadioButton.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
+                        background: RadioButton.has-hover ? Palette.control-foreground.transparentize(60%) : Palette.control-foreground.transparentize(70%);
                         border-radius: RadioButton.width / 2;
                         width: parent.width / 2;
                         height: parent.width / 2;
@@ -34,36 +152,3 @@ export component RadioButton {
     }
 }
 
-export component RadioBoxes {
-    in-out property <bool> checked;
-    in-out property text <=> t.text;
-    callback clicked <=> RadioBoxes.clicked;
-
-    RadioBoxes := TouchArea {
-        HorizontalLayout {
-            spacing: 5px;
-            VerticalLayout {
-                alignment: center;
-                Rectangle {
-                    width: 75px;
-                    height: 32.5px;
-                    border-width: 1.5px;
-                    border-color: RadioBoxes.has-hover ? Palette.border : transparent;
-                    border-radius: 2px;
-                    background: RadioBoxes.pressed ? Palette.control-background.brighter(200%) : Palette.control-background;
-                    t := Text {
-                        font-size: 12px;
-                    }
-                    if checked : Rectangle {
-                        background: RadioBoxes.has-hover ? Palette.control-background.brighter(10%) : Palette.control-background;
-                        border-radius: 2px;
-                     //   width: parent.width / 2;
-                    //    height: parent.width / 2;
-                      //  x: parent.width / 4;
-                     //   y: parent.width / 4;
-                    }
-                }
-            }
-        }
-    }
-}
