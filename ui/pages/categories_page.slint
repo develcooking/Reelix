@@ -1,6 +1,6 @@
 import { GridBox, LineEdit, HorizontalBox, Button, VerticalBox, CheckBox } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
-import { Logic } from "../globale.slint";
+import { Logic, Others } from "../globale.slint";
 
 export component CategoriesPage {
     in property <[string]> the_model;
@@ -30,33 +30,48 @@ export component CategoriesPage {
                     font-size: 16px;
                     placeholder-text: @tr("How should your Type be called");
                     padding: 8px;
+                    edited => {if (self.text != ""){
+                    createbtn.enabled = true;}
+                }
                 }
                 valueofcombobox := ComboBoxScroll {
                     height: 60px;
                     width: 45%;
                     model: the_model;
                     current-value: "Select a Category to Remove";
+                    selected => {Logic.currentselrecord(self.current-value);
+                        removebtn.enabled = true;}
+                    init => {Logic.currentselrecord(self.current-value)}
                 }
+
             }
             Row {
                 osbox := CheckBox { text: "Support OS selection"; }
+                CheckBox {
+                    checked: ossupportbox-value;
+                    text: "Supports OS selection";
+                    enabled: false;
+                }
             }
             Row {
-                Button {
+                createbtn :=Button {
                     text: @tr("Insert into Databank");
                     padding: 8px;
                     max-height: 30px;
+                    enabled: false;
                     clicked => {
                         Logic.createtype(newtypeinput.text);
                         Logic.ossupport-value(osbox.checked);
                     }
                 }
-                Button {
+                removebtn := Button {
                     max-height: 30px;
                     text: @tr("Remove");
-                    clicked => {
+                    enabled: false;
+                    clicked => {//sends a callback to cabavalueofcombobox with the current value of the combobox
                         Logic.cabavalueofcombobox(valueofcombobox.current-value);
-                        valueofcombobox.current-value = "Select a Category to Remove";
+                        removebtn.enabled = false;
+                        valueofcombobox.current-value = "Select a Category to Remove";// resetz the current value back to Default
                     }
                 }
             }

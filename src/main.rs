@@ -37,6 +37,11 @@ struct DatabaseRecord {
     osdep: Option<bool>,
 }
 
+#[derive(Debug, Default)]
+struct CheckboxData {
+    osdep_value: Option<bool>,
+}
+
 fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformError> {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
@@ -54,6 +59,25 @@ fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformErro
     Ok(records)
 }
 
+fn ask_for_checkbox_values(sel: String, checkbox_data: &Rc<RefCell<CheckboxData>>) {
+    let mut conn = POOL.get_conn()
+        .expect("Failed to get a connection from the pool");
+    let query = format!("SELECT osdep FROM Typtabelle WHERE Typen = '{}'", sel);
+
+    let result: Vec<i32> = conn.query_map(query, |osdep: i32| { osdep }).unwrap();
+
+    let value = result.get(0).cloned().unwrap_or_default();
+
+    // Convert the value into a bool (1 becomes true, 0 becomes false)
+    let result1 = value != 0;
+
+    // Updating the shared value
+    checkbox_data.borrow_mut().osdep_value = Some(result1);
+
+    println!("Osdepvalue of {} is: {}", sel, result1);
+}
+
+// function to remove a given type(category)
 fn remove_data_from_database(valueofcombobox: &str) {
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
@@ -70,7 +94,7 @@ fn remove_data_from_database(valueofcombobox: &str) {
     }
 }
 
-fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> {
+fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxData>>) -> Result<(), slint::PlatformError> {
     let data_from_db = fetch_data_from_database()?;
     let mut shared_typen_strings = Vec::new();
     let mut shared_osdep_strings = Vec::new(); // Proper initialization of shared_osdep_strings
@@ -85,11 +109,11 @@ fn update_database_display(ui: &MainWindow) -> Result<(), slint::PlatformError> 
 
     let model_rc = Rc::new(VecModel::from(shared_typen_strings)).into();
 
-    // Print each element in shared_osdep_strings
-    for osdep in &shared_osdep_strings {
-        println!("Checkbox value: {}", osdep);
+    // Access the shared osdep_value
+    if let Some(osdep_value) = checkbox_data.borrow().osdep_value {
+        println!("Shared osdep value: {}", osdep_value);
+        ui.set_ossupportbox_value(osdep_value);
     }
-
     ui.set_the_model(model_rc);
     let current_datetime = Local::now();
     let date = current_datetime.format("%Y-%m-%d").to_string();
@@ -103,7 +127,7 @@ fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
     println!("sendrequest: Received comment_string: {:?}", data_bundle_sendreq.comment_string);
     println!("sendrequest: Received current_value_type: {:?}", data_bundle_sendreq.current_value_type);
     println!("sendrequest: Received current_location: {:?}", data_bundle_sendreq.current_location);
-    println!("sendrequest: Received operating_system: {:?}", data_bundle_sendreq.operating_system); // Hinzugefügt
+    println!("sendrequest: Received operating_system: {:?}", data_bundle_sendreq.operating_system);
 
     // Get a connection from the connection pool
     let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
@@ -157,12 +181,14 @@ fn createdata(data_bundle: &DataBundle) {
         println!("Received bool_value: {:?}", data_bundle.bool_value);
         println!("Filtered String: '{}'", filtered_text);
 
-        if let Some(true) | Some(false) = data_bundle.bool_value {
+        if let Some(bool_value) = data_bundle.bool_value {
+            if bool_value == true || bool_value == false {
+                let checkboxvalue = !bool_value;
             // Insert data into database
             if !filtered_text.is_empty() {
                 conn.exec_drop(
                     r"INSERT INTO Typtabelle (Typen, osdep) VALUES (?, ?)",
-                    (&filtered_text, data_bundle.bool_value), // Explicitly use true
+                    (&filtered_text, checkboxvalue), // Explicitly use true
                 ).expect("Error inserting data");
 
                 println!("Data inserted successfully!");
@@ -174,13 +200,15 @@ fn createdata(data_bundle: &DataBundle) {
         }
     } else {
         println!("Input string is None; cannot insert into database.");
-    }
+    }}
 }
+
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = MainWindow::new()?;
     let ui_handle = ui.as_weak();
-    let _ = update_database_display(&ui);
+    let checkbox_data = Rc::new(RefCell::new(CheckboxData::default()));
+    let _ = update_database_display(&ui, &checkbox_data);
     
     // Rc and RefCell for safe access and mutation of the data
     let data_bundle = Rc::new(RefCell::new(DataBundle {
@@ -198,6 +226,9 @@ fn main() -> Result<(), slint::PlatformError> {
 
     let ui_handle_copy = ui_handle.clone();
     let ui_handle_copy2 = ui_handle.clone();
+    let ui_handle_copy3 = ui_handle.clone();
+    let checkbox_data_copy1 = Rc::clone(&checkbox_data);
+    let checkbox_data_copy2 = Rc::clone(&checkbox_data);
 
     // Integration of ui.on_ossupport_value into event handling
     let ossupport_data_bundle = Rc::clone(&data_bundle);
@@ -219,14 +250,7 @@ fn main() -> Result<(), slint::PlatformError> {
             createdata(&data_bundle_ref);
         }
 
-        let _ = update_database_display(&ui_handle_copy.unwrap());
-    });
-
-    // Define a closure to create and insert data into the database based on user input
-    ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox: SharedString| {
-        println!("removed {} from database", valueofcombobox);
-        remove_data_from_database(&valueofcombobox);
-        let _ = update_database_display(&ui_handle_copy2.unwrap());
+        let _ = update_database_display(&ui_handle_copy.unwrap(), &checkbox_data_copy1);
     });
 
     let commentrequest_data_bundle = Rc::clone(&data_bundle_sendreq);
@@ -263,6 +287,22 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
+    // If the callback is trigergt grabs the current value of the comboboxScroll and delets it
+    ui.global::<Logic>().on_cabavalueofcombobox(move |valueofcombobox: SharedString| {
+        println!("removed {} from database", valueofcombobox);
+        remove_data_from_database(&valueofcombobox);
+        let _ = update_database_display(&ui_handle_copy2.unwrap(), &checkbox_data_copy2);//updates the avalible values in the database
+    });
+
+    ui.global::<Logic>().on_currentselrecord(move |sel: SharedString| {
+        {
+          println!("value of combox is: {}", sel);
+          ask_for_checkbox_values(sel.to_string(), &checkbox_data);
+          let _ = update_database_display(&ui_handle_copy3.unwrap(), &checkbox_data);
+        }
+    });
+
+    // to open links in the web
     ui.global::<Logic>().on_open_url(|url: SharedString| {
         open::that(url.as_str()).ok();
     });
