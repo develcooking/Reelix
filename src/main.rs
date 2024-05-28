@@ -1,3 +1,9 @@
+#![windows_subsystem = "windows"]
+
+use i_slint_backend_winit;
+use i_slint_backend_winit::winit::window::WindowButtons;
+use i_slint_backend_winit::WinitWindowAccessor;
+
 use slint::{SharedString, VecModel};
 slint::include_modules!();
 use std::rc::Rc;
@@ -206,6 +212,9 @@ fn createdata(data_bundle: &DataBundle) {
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = MainWindow::new()?;
+    ui.window().with_winit_window(|winit_win: &i_slint_backend_winit::winit::window::Window| {
+        winit_win.set_enabled_buttons(WindowButtons::MINIMIZE | WindowButtons::CLOSE);
+     });
     let ui_handle = ui.as_weak();
     let checkbox_data = Rc::new(RefCell::new(CheckboxData::default()));
     let _ = update_database_display(&ui, &checkbox_data);
