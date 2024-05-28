@@ -30,7 +30,7 @@ export component MainWindow inherits Window {
                 @tr("Menu" => "About")
             ];
         }
-        if(side-bar.current-item == 0) : RecordPage {the_model: the_model; thedate: thedate;}
+        if(side-bar.current-item == 0) : RecordPage {the_model: the_model; thedate: thedate; ossupportbox-value: ossupportbox-value;}
         if(side-bar.current-item == 1) : RequestPage {}
         if(side-bar.current-item == 2) : StatisticsPage {}
         if(side-bar.current-item == 3) : AnalyzesPage {}

@@ -1,10 +1,11 @@
 import { VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { RadioButton, RadioBoxes } from "../RadioButton.slint";
-import { Logic } from "../globale.slint";
+import { Logic, Others } from "../globale.slint";
 export component RecordPage inherits Rectangle {
     in property <[string]> the_model;
     in-out property <string> thedate;
+    in property <bool> ossupportbox-value;
 
     HorizontalBox {
         alignment: center;
@@ -21,8 +22,18 @@ export component RecordPage inherits Rectangle {
                             width: 560px;
                             height: 40px;
                             model: the_model;
+                            selected => {Logic.currentselrecord(self.current-value);
+                            if (ossupportbox-value == false){
+                                Others.widgets-enabled = false;
+                            }else {Others.widgets-enabled = true;}
+                            }
+                            init => {Logic.currentselrecord(self.current-value);
+                                if (ossupportbox-value == false){
+                                    Others.widgets-enabled = false;
+                                }else {Others.widgets-enabled = true;}
+                                }
+                            }
                         }
-                    }
 
                     HorizontalBox {
                         padding-top: -15px;
@@ -38,13 +49,13 @@ export component RecordPage inherits Rectangle {
                         }
 
                         alignment: stretch;
-                        b_indipendent := RadioBoxes { text: "Independent"; checked: true; clicked => { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text) } init () => { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_win := RadioBoxes { text: "Windows"; clicked => { unsel(); b_win.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_linux := RadioBoxes { text: "Linux"; clicked => { unsel(); b_linux.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_macos := RadioBoxes { text: "MacOS"; clicked => { unsel(); b_macos.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_iOSiPadOS := RadioBoxes { text: "iOS/iPadOS"; clicked => { unsel(); b_iOSiPadOS.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_android := RadioBoxes { text: "Android"; clicked => { unsel(); b_android.checked = true; Logic.OperatingSystem(self.text) } }
-                        b_others := RadioBoxes { text: "Others"; clicked => { unsel(); b_others.checked = true; Logic.OperatingSystem(self.text) } }
+                        b_indipendent := RadioBoxes { text: "Independent"; enabled: Others.widgets-enabled; checked: true; clicked => { if (b_indipendent.enabled) { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } init => { if (b_indipendent.enabled) { unsel(); b_indipendent.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
+                        b_win := RadioBoxes { text: "Windows"; enabled: Others.widgets-enabled; clicked => { if (b_win.enabled) { unsel(); b_win.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("NONE"); } } }
+                        b_linux := RadioBoxes { text: "Linux"; enabled: Others.widgets-enabled; clicked => { if (b_linux.enabled) { unsel(); b_linux.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
+                        b_macos := RadioBoxes { text: "MacOS"; enabled: Others.widgets-enabled; clicked => { if (b_macos.enabled) { unsel(); b_macos.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
+                        b_iOSiPadOS := RadioBoxes { text: "iOS/iPadOS"; enabled: Others.widgets-enabled; clicked => { if (b_iOSiPadOS.enabled) { unsel(); b_iOSiPadOS.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
+                        b_android := RadioBoxes { text: "Android"; enabled: Others.widgets-enabled; clicked => { if (b_android.enabled) { unsel(); b_android.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
+                        b_others := RadioBoxes { text: "Others"; enabled: Others.widgets-enabled; clicked => { if (b_others.enabled) { unsel(); b_others.checked = true; Logic.OperatingSystem(self.text); } else { Logic.OperatingSystem("None"); } } }
                     }
                 }
             }
