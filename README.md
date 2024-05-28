@@ -3,17 +3,18 @@ This project aims to replace the "Neelix" program in the IT support of the Unive
 
 Reelix wants to redo all this. Written in Rust and build with [Slint](https://slint.dev/) as the UI Framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
-
+We are using the Royalty-free License of Slint
 # Things to add
 
  On the Record panel
 - [x] Replace Combobox with ComboboxScroll
-- [x] Operating System selection in sertent categories (doesn't disable if Support OS selection is deactivated )
-- [x] A text box for comment info (Implemented with Lineedit waiting for upstream for textbox placeholder)
-- [ ] Select time for submitting (can't select yet comming soon)
-- [x] Select place were the issue happend (Ui colors need to be worked on)
-- [ ] Select the number of thickets you want to create at once
-- [x] Submitt button (early stages)
+- [x] Operating System selection in sertent categories (doesn't disable if Support OS selection is deactivated) (linked to [Go to Independend / Global Issues](#independend--global-issues)
+
+- [x] A text box for comment info (Implemented with Lineedit waiting for new upstream Version for textbox placeholder waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
+- [ ] Select time for submitting (can't select yet comming soon) Proper Date and time picker Widgets depends on Upstream [Tracked in issue #46](https://github.com/slint-ui/slint/issues/46)
+- [x] Select location of the issue
+- [ ] Select the number of tickets you want to create at once
+- [x] Submitt button
 
 On the Request-Log panel
 - [ ] Dynamicly Created Table sheet
@@ -51,18 +52,28 @@ A Info panel
 - [x]  show some stuff about the application 
 
 ### Independend / Global Issues
+- [ ] Hight contrast mode
+- [ ] Multilanguage support
+- [ ] full keyboard support
+- [ ] shortcuts to pannels
 
 CoboboxScroll
 - [x] make the popup solid insted of transperent
 - [x] Scrolling works
 - [x] Theme works on it
-- [ ] ComboboxScroll support key inputs
-- [ ] ComboboxScroll tab support
+- [x] ComboboxScroll support key inputs
+- [x] ComboboxScroll tab support
 - [ ] Accessibility for blind people
-- [ ] Hight contrast mode
-- [ ] Multilanguage support
-- [ ] full keyboard support
-- [ ] shortcuts to pannels
+- [x] selected (string) callback
+- [ ] fix theme issue in light mode
+- [x] Popup disappears if focus is shifted via tab and escape
+
+RadioBoxes
+- [ ] change the selected color up so something not as
+RadioButton
+- [x] Works as entendet
+- [ ] support all [common properties](https://releases.slint.dev/1.6.0/docs/slint/src/language/builtins/elements#common-properties)
+
 more things will be added in the future
 
 ## Things done
