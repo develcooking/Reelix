@@ -1,6 +1,6 @@
 [package]
 name = "reelix"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["jan-peter.friebe@uni-bamberg.de"]
 edition = "2021"
 build = "build.rs"

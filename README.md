@@ -1,133 +1,124 @@
 ## About
-This project aims to replace the "Neelix" program in the IT support of the University of Bamberg. Neelix was written around 2015-2017, and the source code seems to be lost. You need to have Java installed and set a variable for JAVA_HOME. The database server uses an out of supported Linux system.
+This project aims to replace the "Neelix" program in the IT support of the University of Bamberg. Neelix was written around 2015-2017, and the source code seems to be lost. You need to have Java installed and set a variable for JAVA_HOME. The database server uses an unsupported Linux system.
 
-Reelix wants to redo all this. Written in Rust and build with [Slint](https://slint.dev/) as the UI Framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
+Reelix aims to redo all of this. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
-We are using the Royalty-free License of Slint
+We are using the royalty-free license of Slint.
+
+<figure>
+    <img src="./preview_of_Reelix_0.0.4.png"
+         alt="A Preview Image of Reelix Version 0.0.4">
+    <figcaption>Home Page of Reelix Version 0.0.4</figcaption>
+</figure>
+
+# Roadmap To 1.0
+- [ ] Feature parity with Neelix
+- [ ] Config needs to be configurable from the GUI
+- [ ] Build binaries for Windows, macOS, and Linux via GitLab pipelines
+
 # Things to add
 
- On the Record panel
-- [x] Replace Combobox with ComboboxScroll
-- [x] Operating System selection in sertent categories (doesn't disable if Support OS selection is deactivated) (linked to [Go to Independend / Global Issues](#independend--global-issues)
-
-- [x] A text box for comment info (Implemented with Lineedit waiting for new upstream Version for textbox placeholder waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
-- [ ] Select time for submitting (can't select yet comming soon) Proper Date and time picker Widgets depends on Upstream [Tracked in issue #46](https://github.com/slint-ui/slint/issues/46)
+On the Record panel
+- [x] Replace ComboBox with ComboBoxScroll
+- [x] Operating System selection in certain categories (doesn't disable if Support OS selection is deactivated) (linked to [Go to Independent / Global Issues](#independent--global-issues))
+- [x] A text box for comment info (implemented with LineEdit, waiting for new upstream version for text box placeholder, waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
+- [ ] Select time for submitting (can't select yet, coming soon) Proper Date and Time picker widgets depend on upstream [Tracked in issue #46](https://github.com/slint-ui/slint/issues/46)
 - [x] Select location of the issue
 - [ ] Select the number of tickets you want to create at once
-- [x] Submitt button
+- [x] Submit button
 
 On the Request-Log panel
-- [ ] Dynamicly Created Table sheet
-- [ ] show the latest 20 entrys 
-- [ ] ability to load more older once with a extra button
-- [ ] ability to remove accidely created once
+- [ ] Dynamically created table sheet
+- [ ] Show the latest 20 entries
+- [ ] Ability to load older ones with an extra button
+- [ ] Ability to remove accidentally created ones
 
 On the Statistics panel
-- [ ] Show statisc form the last 7 days
-- [ ] optional to ask for a specific date range
-- [ ] optional scroll back to the 7 days before the current week
+- [ ] Show stats from the last 7 days
+- [ ] Option to ask for a specific date range
+- [ ] Option to scroll back to the 7 days before the current week
 
-On the Analyzes panel
-- [ ] Export sql table to csv or html
-- [ ] need to have the ability to select the date range
+On the Analysis panel
+- [ ] Export SQL table to CSV or HTML
+- [ ] Ability to select the date range
 
-On the Categorie Management panel
-- [x] To Create Categories(Typs)
-- [x] To Delete Categories(Typs)
+On the Category Management panel
+- [x] Create categories (types)
+- [x] Delete categories (types)
 
 On the Settings panel
-- [ ] ability to set a database timeout
-- [ ] ability to set a databse server with IPv4 address (in the future ipv6 and maybe domain name)
-- [ ] ability to set a databse port
-- [ ] ability to set a databse name
-- [ ] ability to set a databse userame
-- [ ] ability to set a databse password
-- [ ] check if it would work
-- [x] dark/light mode switch
-- [ ] dark/light mode switch state
-- [ ] theme switcher (fluent, cosmic, cupertino)
-- [ ] language selection
+- [ ] Ability to set a database timeout
+- [ ] Ability to set a database server with an IPv4 address (in the future IPv6 and maybe domain name)
+- [ ] Ability to set a database port
+- [ ] Ability to set a database name
+- [ ] Ability to set a database username
+- [ ] Ability to set a database password
+- [ ] Check if it would work
+- [x] Dark/light mode switch
+- [ ] Save dark/light mode switch to config
+- [ ] Theme switcher (fluent, cosmic, cupertino)
+- [ ] Language selection
 
-A Info panel
-- [x]  show some stuff about the application 
+An Info panel
+- [x] Show some information about the application 
 
-### Independend / Global Issues
-- [ ] Hight contrast mode
+### Independent / Global Issues
+- [ ] High contrast mode
 - [ ] Multilanguage support
-- [ ] full keyboard support
-- [ ] shortcuts to pannels
+- [ ] Full keyboard support
+- [ ] Shortcuts to panels
 
-CoboboxScroll
-- [x] make the popup solid insted of transperent
+ComboBoxScroll
+- [x] Make the popup solid instead of transparent
 - [x] Scrolling works
 - [x] Theme works on it
-- [x] ComboboxScroll support key inputs
-- [x] ComboboxScroll tab support
+- [x] ComboBoxScroll supports key inputs
+- [x] ComboBoxScroll tab support
 - [ ] Accessibility for blind people
-- [x] selected (string) callback
-- [ ] fix theme issue in light mode
+- [x] Selected (string) callback
+- [ ] Fix theme issue in light mode
 - [x] Popup disappears if focus is shifted via tab and escape
 
 RadioBoxes
-- [ ] change the selected color up so something not as
+- [ ] Change the selected color to be less vibrant
+
 RadioButton
-- [x] Works as entendet
-- [ ] support all [common properties](https://releases.slint.dev/1.6.0/docs/slint/src/language/builtins/elements#common-properties)
+- [x] Works as intended
+- [ ] Support all [common properties](https://releases.slint.dev/1.6.0/docs/slint/src/language/builtins/elements#common-properties)
 
-more things will be added in the future
-
-## Things done
-- Sql basics, add categories, remove categories, ask for existing categories(see cmd branches and typetesting)
-- Dynamicly create categories (in Gui) see branch combobox
-
-
-
-### Things Reelix needs to can:
-Typs must be removeable and addable
-Typs must be centrilysed in another table
-clients must use typs form the cenrilysed location
-
-- Config.toml file support
-- build binarys for Windows and Linux
-- Basicly have the same functionalatiy as Neelix and more
-
+More things will be added in the future.
 
 # How to use
 
 ### The easy way 
-Download the bin file for your Oporating System of Choice
+Download the bin file for your operating system of choice.
 
-### THE HARD WAY
-1. You have to install  ```rustc``` and ```cargo``` [(Rust Getting Started Guide)](https://www.rust-lang.org/learn/get-started)
-2. Go to [the tutorial](https://releases.slint.dev/1.5.1/docs/tutorial/rust/introduction)
-there you have to install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate)
-
-```
-cargo install cargo-generate
-```
-3.   Clone this Repo
-
+### The hard way
+1. You have to install `rustc` and `cargo` [(Rust Getting Started Guide)](https://www.rust-lang.org/learn/get-started)
+2. Go to [the tutorial](https://releases.slint.dev/1.5.1/docs/tutorial/rust/introduction) and install [`cargo-generate`](https://github.com/cargo-generate/cargo-generate)
+    ```
+    cargo install cargo-generate
+    ```
+3. Clone this repo
+    ```
     git clone https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/
- 
-4. Cd into it    
-```
-cd ./reelix
- ```
+    ```
+4. Change directory into it    
+    ```
+    cd ./reelix
+    ```
 5. Smash your head against the wall
 6. Build the binary
-```
-cargo build
-```
+    ```
+    cargo build
+    ```
 
-
-If this doesn't work good luck 
+If this doesn't work, good luck.
 
 # Setting up the database
-Install mariadb or mysql on a Linux system of your choice
-Recommended  latest stable release of Debian currently 12
+Install MariaDB or MySQL on a Linux system of your choice. Recommended: latest stable release of Debian, currently 12.
 
 From : [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
-I know it's for Debian 11 but it also works on 12
 
 ```
 sudo apt update
