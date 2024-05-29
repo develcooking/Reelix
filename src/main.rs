@@ -19,13 +19,14 @@ lazy_static! {
     };
 }
 
-// Struct to hold both bool value and input string
+// Define a structure to hold boolean value and input string
 #[derive(Debug)]
 struct DataBundle {
     bool_value: Option<bool>,
     input_string: Option<String>,
 }
 
+// Define a structure to hold data for sending requests
 #[derive(Debug)]
 struct Databundlesendreq {
     comment_string: Option<String>,
@@ -34,19 +35,24 @@ struct Databundlesendreq {
     operating_system: Option<String>,
 }
 
+// Define a structure to represent a database record
 #[derive(Debug)]
 struct DatabaseRecord {
     typen: String,
     osdep: Option<bool>,
 }
 
+// Define a structure to hold checkbox data
 #[derive(Debug, Default)]
 struct CheckboxData {
     osdep_value: Option<bool>,
 }
 
+// Function to fetch data from the database
 fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformError> {
+    // Establish a connection from the connection pool
     let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+    // Execute a query to fetch data
     let records: Vec<DatabaseRecord> = conn
         .query_map(
             "SELECT Typen, osdep FROM Typtabelle ORDER BY Typen ASC",
@@ -61,27 +67,36 @@ fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformErro
     Ok(records)
 }
 
-fn execute_query(query: &str, params: &[&dyn mysql::prelude::ToValue]) -> Result<(), mysql::error::Error> {
+// Function to execute a database query
+fn execute_query(query: &str, params: &[&dyn ToValue]) -> Result<(), Error> {
+    // Establish a connection from the connection pool
     let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+    // Execute the query with parameters
     conn.exec_drop(query, params)?;
     Ok(())
 }
 
+// Function to ask for checkbox values from the database
 fn ask_for_checkbox_values(sel: &str, checkbox_data: &Rc<RefCell<CheckboxData>>) {
+    // Formulate a query to select checkbox values based on selection
     let query = format!("SELECT osdep FROM Typtabelle WHERE Typen = '{}'", sel);
+    // Execute the query and map the results
     let result: Vec<Option<bool>> = POOL.get_conn().unwrap().query_map(&query, |osdep: Option<i32>| osdep.map(|val| val != 0)).unwrap();
 
+    // Extract and update the checkbox value
     let value = result.get(0).cloned().unwrap_or_default();
     checkbox_data.borrow_mut().osdep_value = value;
     println!("Osdepvalue of {} is: {:?}", sel, value);
 }
 
-// function to remove a given type(category)
+// Function to remove data from the database
 fn remove_data_from_database(valueofcombobox: &str) {
+    // Establish a connection from the connection pool
     let mut conn = POOL.get_conn()
         .expect("Failed to get a connection from the pool");
     let typen = valueofcombobox.trim();
     if !typen.is_empty() && typen != "Select a Category to Remove" {
+        // Execute a query to delete data from the database
         conn.exec_drop(
             r"DELETE FROM Typtabelle WHERE Typen = ?",
             (&typen,)
@@ -96,8 +111,9 @@ fn remove_data_from_database(valueofcombobox: &str) {
 fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxData>>) -> Result<(), slint::PlatformError> {
     let data_from_db = fetch_data_from_database()?;
     let mut shared_typen_strings = Vec::new();
-    let mut shared_osdep_strings = Vec::new(); // Proper initialization of shared_osdep_strings
+    let mut shared_osdep_strings = Vec::new();
 
+    // Process database records and prepare data for UI display
     for record in data_from_db {
         shared_typen_strings.push(SharedString::from(record.typen.clone()));
         // Extract the value from record.osdep and add it to shared_osdep_strings
@@ -106,9 +122,10 @@ fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxD
         }
     }
 
+    // Create Vecmodel for Comboxes
     let model_rc = Rc::new(VecModel::from(shared_typen_strings)).into();
 
-    // Access the shared osdep_value
+    // Update UI with model data and checkbox values
     if let Some(osdep_value) = checkbox_data.borrow().osdep_value {
         println!("Shared osdep value: {}", osdep_value);
         ui.set_ossupportbox_value(osdep_value);
@@ -167,9 +184,9 @@ fn createdata(data_bundle: &DataBundle) {
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = MainWindow::new()?;
-    ui.window().with_winit_window(|winit_win: &i_slint_backend_winit::winit::window::Window| {
+    ui.window().with_winit_window(|winit_win| {
         winit_win.set_enabled_buttons(WindowButtons::MINIMIZE | WindowButtons::CLOSE);
-     });
+    });
     let ui_handle = ui.as_weak();
     let checkbox_data = Rc::new(RefCell::new(CheckboxData::default()));
     let _ = update_database_display(&ui, &checkbox_data);
@@ -180,12 +197,11 @@ fn main() -> Result<(), slint::PlatformError> {
         input_string: None,
     }));
 
-    // Rc and RefCell for safe access and mutation of the data
     let data_bundle_sendreq = Rc::new(RefCell::new(Databundlesendreq {
         comment_string: None,
         current_value_type: None,
         current_location: None,
-        operating_system: None
+        operating_system: None,
     }));
 
     let ui_handle_copy = ui_handle.clone();
@@ -194,21 +210,15 @@ fn main() -> Result<(), slint::PlatformError> {
     let checkbox_data_copy1 = Rc::clone(&checkbox_data);
     let checkbox_data_copy2 = Rc::clone(&checkbox_data);
 
-    // Integration of ui.on_ossupport_value into event handling
     let ossupport_data_bundle = Rc::clone(&data_bundle);
     ui.global::<Logic>().on_ossupport_value(move |ossupport_value: bool| {
-        // Update bool_value in the shared data bundle
         ossupport_data_bundle.borrow_mut().bool_value = Some(ossupport_value);
-
         println!("Received ossupport_value: {}", ossupport_value);
     });
 
-    // Integration of ui.on_createtype into event handling
     let createtype_data_bundle = Rc::clone(&data_bundle);
     ui.global::<Logic>().on_createtype(move |newtypeinput: SharedString| {
-        // Update input_string in the shared data bundle
         createtype_data_bundle.borrow_mut().input_string = Some(newtypeinput.to_string());
-        // Call createdata if both bool_value and input_string are available
         let data_bundle_ref = createtype_data_bundle.borrow();
         if let Some(true) | Some(false) = data_bundle_ref.bool_value {
             createdata(&data_bundle_ref);
@@ -225,7 +235,6 @@ fn main() -> Result<(), slint::PlatformError> {
 
     let makerecord_data_bundle = Rc::clone(&data_bundle_sendreq);
     ui.global::<Logic>().on_makerecord(move |current_value: SharedString| {
-        // Update current_value_type and ensure comment_string and current_location are set before calling sendrequest
         {
             let mut bundle = makerecord_data_bundle.borrow_mut();
             bundle.current_value_type = Some(current_value.to_string());
@@ -242,6 +251,7 @@ fn main() -> Result<(), slint::PlatformError> {
             println!("value of location is: {}", location);
         }
     });
+
     let operating_system_data_bundle = Rc::clone(&data_bundle_sendreq);
     ui.global::<Logic>().on_OperatingSystem(move |os: SharedString| {
         {
@@ -260,9 +270,9 @@ fn main() -> Result<(), slint::PlatformError> {
 
     ui.global::<Logic>().on_currentselrecord(move |sel: SharedString| {
         {
-          println!("value of combox is: {}", sel);
-          ask_for_checkbox_values(&sel.to_string(), &checkbox_data);
-          let _ = update_database_display(&ui_handle_copy3.unwrap(), &checkbox_data);
+            println!("value of combox is: {}", sel);
+            ask_for_checkbox_values(&sel.to_string(), &checkbox_data);
+            let _ = update_database_display(&ui_handle_copy3.unwrap(), &checkbox_data);
         }
     });
 
