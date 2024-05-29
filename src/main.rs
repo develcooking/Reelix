@@ -34,7 +34,6 @@ struct Databundlesendreq {
     operating_system: Option<String>,
 }
 
-// Struct to hold database records
 #[derive(Debug)]
 struct DatabaseRecord {
     typen: String,
@@ -47,8 +46,7 @@ struct CheckboxData {
 }
 
 fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformError> {
-    let mut conn = POOL.get_conn()
-        .expect("Failed to get a connection from the pool");
+    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
     let records: Vec<DatabaseRecord> = conn
         .query_map(
             "SELECT Typen, osdep FROM Typtabelle ORDER BY Typen ASC",
@@ -63,22 +61,19 @@ fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformErro
     Ok(records)
 }
 
-fn ask_for_checkbox_values(sel: String, checkbox_data: &Rc<RefCell<CheckboxData>>) {
-    let mut conn = POOL.get_conn()
-        .expect("Failed to get a connection from the pool");
-    let query = format!("SELECT osdep FROM Typtabelle WHERE Typen = '{}'", sel);
+fn execute_query(query: &str, params: &[&dyn mysql::prelude::ToValue]) -> Result<(), mysql::error::Error> {
+    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+    conn.exec_drop(query, params)?;
+    Ok(())
+}
 
-    let result: Vec<i32> = conn.query_map(query, |osdep: i32| { osdep }).unwrap();
+fn ask_for_checkbox_values(sel: &str, checkbox_data: &Rc<RefCell<CheckboxData>>) {
+    let query = format!("SELECT osdep FROM Typtabelle WHERE Typen = '{}'", sel);
+    let result: Vec<Option<bool>> = POOL.get_conn().unwrap().query_map(&query, |osdep: Option<i32>| osdep.map(|val| val != 0)).unwrap();
 
     let value = result.get(0).cloned().unwrap_or_default();
-
-    // Convert the value into a bool (1 becomes true, 0 becomes false)
-    let result1 = value != 0;
-
-    // Updating the shared value
-    checkbox_data.borrow_mut().osdep_value = Some(result1);
-
-    println!("Osdepvalue of {} is: {}", sel, result1);
+    checkbox_data.borrow_mut().osdep_value = value;
+    println!("Osdepvalue of {} is: {:?}", sel, value);
 }
 
 // function to remove a given type(category)
@@ -127,84 +122,46 @@ fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxD
     Ok(())
 }
 
-fn sendrequest(data_bundle_sendreq: &Databundlesendreq) {
-    println!("sendrequest: Received comment_string: {:?}", data_bundle_sendreq.comment_string);
-    println!("sendrequest: Received current_value_type: {:?}", data_bundle_sendreq.current_value_type);
-    println!("sendrequest: Received current_location: {:?}", data_bundle_sendreq.current_location);
-    println!("sendrequest: Received operating_system: {:?}", data_bundle_sendreq.operating_system);
-
-    // Get a connection from the connection pool
-    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
-
+fn send_request(data_bundle_sendreq: &Databundlesendreq) {
+    println!("sendrequest: {:?}", data_bundle_sendreq);
     if let (Some(current_value_type), Some(operating_system)) = (&data_bundle_sendreq.current_value_type, &data_bundle_sendreq.operating_system) {
         let current_datetime = Local::now();
-        // extract Date
-        let year = current_datetime.year();
-        let month = current_datetime.month();
-        let day = current_datetime.day();
-
-        // extract Time
-        let hour = current_datetime.hour();
-        let minute = current_datetime.minute();
-        let second = current_datetime.second();
-
-        let date = format!("{}-{}-{}", year, month, day);
-        let time = format!("{}:{}:{}", hour, minute, second);
-
-        // Check if the comment is None, empty or contains only whitespace
-        let comment_log = data_bundle_sendreq
-            .comment_string
-            .as_ref()
-            .map(|s| s.trim().to_string())
-            .unwrap_or_else(|| String::new());
-
-        // Use current_location from data_bundle_sendreq
-        let location = data_bundle_sendreq
-            .current_location
-            .as_ref()
-            .map(|s| s.trim())
-            .filter(|s| !s.is_empty())
-            .map(String::from)
-            .unwrap_or_else(|| "UNKNOWN".to_string()); // Default to "UNKNOWN" if location is None or empty
-
-        conn.exec_drop("INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)",
-            (date, time, current_value_type, operating_system, comment_log, location)).unwrap();
+        let date = current_datetime.format("%Y-%m-%d").to_string();
+        let time = current_datetime.format("%H:%M:%S").to_string();
+        let comment_log = data_bundle_sendreq.comment_string.as_ref().map(|s| s.trim()).unwrap_or_default().to_string();
+        let location = data_bundle_sendreq.current_location.as_ref().map(|s| s.trim()).filter(|s| !s.is_empty()).unwrap_or_else(|| "UNKNOWN");
+        let query = "INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)";
+        execute_query(query, &[&date, &time, current_value_type, operating_system, &comment_log, &location]).unwrap();
     } else {
         println!("current_value_type is None; cannot insert into database.");
     }
 }
 
 fn createdata(data_bundle: &DataBundle) {
-    // Get a connection from the connection pool
-    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
-
     // Insert the data into the database if input_string is valid
     if let Some(input_string) = &data_bundle.input_string {
         let filtered_text = input_string.trim().to_string();
         println!("Original String: '{}'", input_string);
         println!("Received bool_value: {:?}", data_bundle.bool_value);
         println!("Filtered String: '{}'", filtered_text);
-
         if let Some(bool_value) = data_bundle.bool_value {
             if bool_value == true || bool_value == false {
                 let checkboxvalue = !bool_value;
             // Insert data into database
-            if !filtered_text.is_empty() {
-                conn.exec_drop(
-                    r"INSERT INTO Typtabelle (Typen, osdep) VALUES (?, ?)",
-                    (&filtered_text, checkboxvalue), // Explicitly use true
-                ).expect("Error inserting data");
-
-                println!("Data inserted successfully!");
+                if !filtered_text.is_empty() {
+                    let query = "INSERT INTO Typtabelle (Typen, osdep) VALUES (?, ?)";
+                    execute_query(query, &[&filtered_text, &checkboxvalue]).expect("Error inserting data");
+                    println!("Data inserted successfully!");
+                } else {
+                    println!("Empty or whitespace-laden type string not inserted into the database.");
+                }
             } else {
-                println!("Empty or whitespace-laden type string not inserted into the database.");
+                println!("No bool value provided or bool value is None, skipping data insertion.");
             }
-        } else {
-            println!("No bool value provided or bool value is None, skipping data insertion.");
         }
     } else {
         println!("Input string is None; cannot insert into database.");
-    }}
+    }
 }
 
 
@@ -274,7 +231,7 @@ fn main() -> Result<(), slint::PlatformError> {
             bundle.current_value_type = Some(current_value.to_string());
             println!("value of record is: {}", current_value);
         }
-        sendrequest(&makerecord_data_bundle.borrow());
+        send_request(&makerecord_data_bundle.borrow());
     });
 
     let location_data_bundle = Rc::clone(&data_bundle_sendreq);
@@ -304,7 +261,7 @@ fn main() -> Result<(), slint::PlatformError> {
     ui.global::<Logic>().on_currentselrecord(move |sel: SharedString| {
         {
           println!("value of combox is: {}", sel);
-          ask_for_checkbox_values(sel.to_string(), &checkbox_data);
+          ask_for_checkbox_values(&sel.to_string(), &checkbox_data);
           let _ = update_database_display(&ui_handle_copy3.unwrap(), &checkbox_data);
         }
     });
