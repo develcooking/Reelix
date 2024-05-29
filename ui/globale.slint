@@ -135,61 +135,62 @@ export global ReelixFontSettings {
     };
 }
 export global ReelixPalette {
-    in property <bool> night-mode: false;
+    in property <bool> dark-color-scheme: false;
     // base palette
-    out property <brush> background:root.night-mode ? #1C1C1C : #FAFAFA;
-    out property <brush> foreground:root.night-mode ? #FFFFFF : #030303;
-    out property <brush> alternate-background:root.night-mode ? #2C2C2C : #f0f0f0;
-    out property <brush> alternate-foreground:root.night-mode ? #FFFFFF : #030303;
-    out property <color> control-background: root.night-mode ? #2c2c2c : #d0d0d0;
-    out property <brush> control-foreground:root.night-mode ? #FFFFFF : #030303;
-    out property <brush> accent-background:root.night-mode ? #60CDFF : #005FB8;
-    out property <brush> accent-foreground:root.night-mode ? #000000 : #FFFFFF;
+    out property <brush> background:dark-color-scheme ? #1C1C1C : #FAFAFA;
+    out property <brush> foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <brush> alternate-background:dark-color-scheme ? #2C2C2C : #f0f0f0;
+    out property <brush> alternate-foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <color> control-background: dark-color-scheme ? #2c2c2c : #d0d0d0;
+    out property <brush> control-foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <brush> accent-background:dark-color-scheme ? #60CDFF : #005FB8;
+    out property <brush> accent-foreground:dark-color-scheme ? #000000 : #FFFFFF;
     out property <brush> selection-background: #0078D4;
-    out property <brush> selection-foreground:root.night-mode ? #000000 : #FFFFFF;
-    out property <brush> border:root.night-mode ? #313131 : #111111;
+    out property <brush> selection-foreground:dark-color-scheme ? #000000 : #FFFFFF;
+    out property <brush> border:dark-color-scheme ? #313131 : #111111;
+
 
     // additional palette
-    out property <brush> secondary-accent-background:root.night-mode ? #60CDFFE6 : #005FB8E6;
-    out property <brush> tertiary-accent-background:root.night-mode ? #60CDFFCC : #005FB8CC;
-    out property <brush> accent-disabled:root.night-mode ? #FFFFFF29 : #00000038;
-    out property <brush> accent-control-border:root.night-mode ? @linear-gradient(180deg, #FFFFFF14 90.67%, #00000024 100%)
+    out property <brush> secondary-accent-background: dark-color-scheme ? #60CDFFE6 : #005FB8E6;
+    out property <brush> tertiary-accent-background: dark-color-scheme ? #60CDFFCC : #005FB8CC;
+    out property <brush> accent-disabled: dark-color-scheme ? #FFFFFF29 : #00000038;
+    out property <brush> accent-control-border: dark-color-scheme ? @linear-gradient(180deg, #FFFFFF14 90.67%, #00000024 100%)
         : @linear-gradient(180deg, #FFFFFF14 90.67%, #00000066 100%);
-    out property <brush> control-border:root.night-mode ? @linear-gradient(180deg, #FFFFFF17 0%, #00000012 8.33%)
+    out property <brush> control-border: dark-color-scheme ? @linear-gradient(180deg, #FFFFFF17 0%, #00000012 8.33%)
         : @linear-gradient(180deg, #0000000F 90.58%, #00000029 100%);
-    out property <brush> text-accent-foreground-secondary:root.night-mode ? #00000080 : #FFFFFFB3;
-    out property <brush> text-accent-foreground-disabled:root.night-mode ? #FFFFFF87 : #FFFFFF;
-    out property <brush> text-secondary:root.night-mode ? #FFFFFFC9 : #00000099;
-    out property <brush> text-tertiary:root.night-mode ? #FFFFFF8A : #00000073;
-    out property <brush> text-disabled:root.night-mode ? #FFFFFF5E : #0000005E;
-    out property <brush> text-control-border:root.night-mode ? @linear-gradient(180deg, #FFFFFF14 99.98%, #FFFFFF8A 100%, #FFFFFF8A 100%)
+    out property <brush> text-accent-foreground-secondary: dark-color-scheme ? #00000080 : #FFFFFFB3;
+    out property <brush> text-accent-foreground-disabled: dark-color-scheme ? #FFFFFF87 : #FFFFFF;
+    out property <brush> text-secondary: dark-color-scheme ? #FFFFFFC9 : #00000099;
+    out property <brush> text-tertiary: dark-color-scheme ? #FFFFFF8A : #00000073;
+    out property <brush> text-disabled: dark-color-scheme ? #FFFFFF5E : #0000005E;
+    out property <brush> text-control-border: dark-color-scheme ? @linear-gradient(180deg, #FFFFFF14 99.98%, #FFFFFF8A 100%, #FFFFFF8A 100%)
         : @linear-gradient(180deg, #0000000F 99.99%, #00000073 100%, #00000073 100%);
-    out property <brush> control-secondary:root.night-mode ? #FFFFFF14 : #F9F9F980;
-    out property <brush> control-tertiary:root.night-mode ? #FFFFFF08 : #F9F9F94D;
-    out property <brush> control-disabled:root.night-mode ? #FFFFFF0A : #F9F9F94D;
-    out property <brush> control-alt-secondary:root.night-mode ? #0000001A : #00000005;
-    out property <brush> control-alt-tertiary:root.night-mode ? #FFFFFF0A : #0000000F;
-    out property <brush> control-alt-quartiary:root.night-mode ? #FFFFFF12 : #00000017;
+    out property <brush> control-secondary: dark-color-scheme ? #FFFFFF14 : #F9F9F980;
+    out property <brush> control-tertiary: dark-color-scheme ? #FFFFFF08 : #F9F9F94D;
+    out property <brush> control-disabled: dark-color-scheme ? #FFFFFF0A : #F9F9F94D;
+    out property <brush> control-alt-secondary: dark-color-scheme ? #0000001A : #00000005;
+    out property <brush> control-alt-tertiary: dark-color-scheme ? #FFFFFF0A : #0000000F;
+    out property <brush> control-alt-quartiary: dark-color-scheme ? #FFFFFF12 : #00000017;
     out property <brush> control-alt-disabled: transparent;
-    out property <brush> control-strong-stroke:root.night-mode ? #FFFFFF99 : #00000099;
-    out property <brush> control-strong-stroke-disabled:root.night-mode ? #FFFFFF29 : #00000038;
-    out property <brush> control-solid:root.night-mode ? #454545: #FFFFFF;
-    out property <brush> circle-border:root.night-mode ? @linear-gradient(180deg, #FFFFFF17 0%, #FFFFFF12 100%)
+    out property <brush> control-strong-stroke: dark-color-scheme ? #FFFFFF99 : #00000099;
+    out property <brush> control-strong-stroke-disabled: dark-color-scheme ? #FFFFFF29 : #00000038;
+    out property <brush> control-solid: dark-color-scheme ? #454545: #FFFFFF;
+    out property <brush> circle-border: dark-color-scheme ? @linear-gradient(180deg, #FFFFFF17 0%, #FFFFFF12 100%)
     : @linear-gradient(180deg, #0000000F 0%, #00000029 100%);
-    out property <brush> control-input-active:root.night-mode ? #1E1E1EB3 : #FFFFFF;
-    out property <brush> focus-stroke-inner:root.night-mode ? #000000B3 : #FFFFFF;
-    out property <brush> focus-stroke-outer:root.night-mode ? #FFFFFF : #000000E6;
-    out property <brush> control-background-stroke-flyout:root.night-mode ? #00000033 : #0000000F;
-    out property <brush> sub-title-secondary:root.night-mode ? #FFFFFF0F : #0000000A;
-    out property <brush> sub-title-tertiary:root.night-mode ? #FFFFFF0A : #00000005;
-    out property <brush> shadow:root.night-mode ? #00000042 : #00000024;
-    out property <brush> subtle:root.night-mode ? #FFFFFF0F : #0000000A;
-    out property <brush> subtle-secondary:root.night-mode ? #FFFFFF0F : #0000000A;
-    out property <brush> subtle-tertiary:root.night-mode ? #FFFFFF0A : #00000005;
-    out property <brush> divider:root.night-mode ? #FFFFFF14 : #00000014;
-    out property <brush> layer-on-mica-base-alt:root.night-mode ? #3A3A3A73 : #FFFFFFB3;
-    out property <brush> layer-on-mica-base-alt-secondary:root.night-mode ? #FFFFFF0F : #0000000A;
-    out property <brush> card-stroke:root.night-mode ? #0000001A : #0000000F;
+    out property <brush> control-input-active: dark-color-scheme ? #1E1E1EB3 : #FFFFFF;
+    out property <brush> focus-stroke-inner: dark-color-scheme ? #000000B3 : #FFFFFF;
+    out property <brush> focus-stroke-outer: dark-color-scheme ? #FFFFFF : #000000E6;
+    out property <brush> control-background-stroke-flyout: dark-color-scheme ? #00000033 : #0000000F;
+    out property <brush> sub-title-secondary: dark-color-scheme ? #FFFFFF0F : #0000000A;
+    out property <brush> sub-title-tertiary: dark-color-scheme ? #FFFFFF0A : #00000005;
+    out property <brush> shadow: dark-color-scheme ? #00000042 : #00000024;
+    out property <brush> subtle: dark-color-scheme ? #FFFFFF0F : #0000000A;
+    out property <brush> subtle-secondary: dark-color-scheme ? #FFFFFF0F : #0000000A;
+    out property <brush> subtle-tertiary: dark-color-scheme ? #FFFFFF0A : #00000005;
+    out property <brush> divider: dark-color-scheme ? #FFFFFF14 : #00000014;
+    out property <brush> layer-on-mica-base-alt: dark-color-scheme ? #3A3A3A73 : #FFFFFFB3;
+    out property <brush> layer-on-mica-base-alt-secondary: dark-color-scheme ? #FFFFFF0F : #0000000A;
+    out property <brush> card-stroke: dark-color-scheme ? #0000001A : #0000000F;
 }
 export global Icons {
     out property <image> dropdown: @image-url("../images/_dropdown.svg");
