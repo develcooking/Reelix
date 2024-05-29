@@ -1,5 +1,3 @@
-#![windows_subsystem = "windows"]
-
 use i_slint_backend_winit;
 use i_slint_backend_winit::winit::window::WindowButtons;
 use i_slint_backend_winit::WinitWindowAccessor;
