@@ -14,7 +14,7 @@ export global Logic {
     callback currentselrecord(string);
 }
 export component FocusBorder inherits Rectangle {
-    border-width: 2px;
+    border-width: 1px;
     border-color: ReelixPalette.focus-stroke-outer;
 
     Rectangle {
@@ -37,7 +37,7 @@ export component MenuBorder inherits Rectangle {
     Rectangle {
         border-width: 1px;
         border-radius: parent.border-radius;
-        border-color: ReelixPalette.control-background-stroke-flyout;
+        border-color: ReelixPalette.opaque-border;
     }
 }
 
@@ -58,15 +58,15 @@ export component ListItem {
 
     states [
         pressed when root.pressed : {
-            i-background.background: is-selected ? #282828  : #1e1e1e;
+            i-background.background: is-selected ? ReelixPalette.subtle-secondary : ReelixPalette.subtle-tertiary;
         }
         hover when root.has-hover : {
-            i-text.color: #d0d0d0;
-            i-background.background: is-selected ? #282828  : #1e1e1e;
+            i-text.color: ReelixPalette.text-secondary;
+            i-background.background: is-selected ? ReelixPalette.subtle-tertiary : ReelixPalette.subtle-secondary;
             i-selector.height: root.is-selected ? 16px : 0;
         }
         is-selected when root.is-selected : {
-            i-background.background: #2c2c2c;
+            i-background.background: ReelixPalette.subtle-secondary;
             i-selector.height: 16px;
         }
     ]
@@ -90,9 +90,9 @@ export component ListItem {
 
             i-text := Text {
                 text: root.item.text;
-                /*color: ReelixPalette.control-foreground;
-                font-size: FluentFontSettings.body.font-size;
-                font-weight: FluentFontSettings.body.font-weight;*/
+                color: ReelixPalette.control-foreground;
+                font-size: ReelixFontSettings.body.font-size;
+                font-weight: ReelixFontSettings.body.font-weight;
                 vertical-alignment: center;
                 horizontal-alignment: left;
                 overflow: elide;
@@ -106,7 +106,7 @@ export component ListItem {
             y: (parent.height - self.height) / 2;
             width: 3px;
             height: 0px;
-            background: Palette.accent-background;
+            background: ReelixPalette.accent-background;
             border-radius: 2px;
 
             animate height { duration: 150ms; easing: ease-out; }
@@ -137,18 +137,29 @@ export global ReelixFontSettings {
 export global ReelixPalette {
     in property <bool> dark-color-scheme: false;
     // base palette
-    out property <brush> background:dark-color-scheme ? #1C1C1C : #FAFAFA;
-    out property <brush> foreground:dark-color-scheme ? #FFFFFF : #030303;
-    out property <brush> alternate-background:dark-color-scheme ? #2C2C2C : #f0f0f0;
-    out property <brush> alternate-foreground:dark-color-scheme ? #FFFFFF : #030303;
-    out property <color> control-background: dark-color-scheme ? #2c2c2c : #d0d0d0;
-    out property <brush> control-foreground:dark-color-scheme ? #FFFFFF : #030303;
-    out property <brush> accent-background:dark-color-scheme ? #60CDFF : #005FB8;
-    out property <brush> accent-foreground:dark-color-scheme ? #000000 : #FFFFFF;
-    out property <brush> selection-background: #0078D4;
-    out property <brush> selection-foreground:dark-color-scheme ? #000000 : #FFFFFF;
-    out property <brush> border:dark-color-scheme ? #313131 : #111111;
+    out property <brush> opaque-background:dark-color-scheme ? #1C1C1C : #FAFAFA;
+    out property <brush> opaque-foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <brush> opaque-alternate-background:dark-color-scheme ? #2C2C2C : #f0f0f0;
+    out property <brush> opaque-alternate-foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <brush> opaque-control-background: dark-color-scheme ? #2c2c2c : #f0f0f0;
+    out property <brush> opaque-control-foreground:dark-color-scheme ? #FFFFFF : #030303;
+    out property <brush> opaque-accent-background:dark-color-scheme ? #60CDFF : #005FB8;
+    out property <brush> opaque-accent-foreground:dark-color-scheme ? #000000 : #FFFFFF;
+    out property <brush> opaque-selection-background: #0078D4;
+    out property <brush> opaque-selection-foreground:dark-color-scheme ? #000000 : #FFFFFF;
+    out property <brush> opaque-border:dark-color-scheme ? #313131 : #e2e2e2;
 
+    out property <brush> background: dark-color-scheme ? #1C1C1C : #FAFAFA;
+    out property <brush> foreground: dark-color-scheme ? #FFFFFF : #000000E6;
+    out property <brush> alternate-background: dark-color-scheme ? #2C2C2C : #f0f0f0;
+    out property <brush> alternate-foreground: dark-color-scheme ? #FFFFFF : #000000E6;
+    out property <brush> control-background: dark-color-scheme ? #FFFFFF0F : #FFFFFFB3;
+    out property <brush> control-foreground: dark-color-scheme ? #FFFFFF : #000000E6;
+    out property <brush> accent-background: dark-color-scheme ? #60CDFF : #005FB8;
+    out property <brush> accent-foreground: dark-color-scheme ? #000000 : #FFFFFF;
+    out property <brush> selection-background: #0078D4;
+    out property <brush> selection-foreground: dark-color-scheme ? #000000 : #FFFFFF;
+    out property <brush> border: dark-color-scheme ? #FFFFFF14 : #00000073;
 
     // additional palette
     out property <brush> secondary-accent-background: dark-color-scheme ? #60CDFFE6 : #005FB8E6;
