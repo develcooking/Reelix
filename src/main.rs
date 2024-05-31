@@ -21,7 +21,7 @@ lazy_static! {
 
 // Define a structure to hold boolean value and input string
 #[derive(Debug)]
-struct DataBundle {
+struct DataBundleCreate {
     bool_value: Option<bool>,
     input_string: Option<String>,
 }
@@ -154,7 +154,7 @@ fn send_request(data_bundle_sendreq: &Databundlesendreq) {
     }
 }
 
-fn createdata(data_bundle: &DataBundle) {
+fn createdata(data_bundle: &DataBundleCreate) {
     // Insert the data into the database if input_string is valid
     if let Some(input_string) = &data_bundle.input_string {
         let filtered_text = input_string.trim().to_string();
@@ -192,7 +192,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let _ = update_database_display(&ui, &checkbox_data);
     
     // Rc and RefCell for safe access and mutation of the data
-    let data_bundle = Rc::new(RefCell::new(DataBundle {
+    let data_bundle_create = Rc::new(RefCell::new(DataBundleCreate {
         bool_value: Some(false),
         input_string: None,
     }));
@@ -210,13 +210,13 @@ fn main() -> Result<(), slint::PlatformError> {
     let checkbox_data_copy1 = Rc::clone(&checkbox_data);
     let checkbox_data_copy2 = Rc::clone(&checkbox_data);
 
-    let ossupport_data_bundle = Rc::clone(&data_bundle);
+    let ossupport_data_bundle = Rc::clone(&data_bundle_create);
     ui.global::<Logic>().on_ossupport_value(move |ossupport_value: bool| {
         ossupport_data_bundle.borrow_mut().bool_value = Some(ossupport_value);
         println!("Received ossupport_value: {}", ossupport_value);
     });
 
-    let createtype_data_bundle = Rc::clone(&data_bundle);
+    let createtype_data_bundle = Rc::clone(&data_bundle_create);
     ui.global::<Logic>().on_createtype(move |newtypeinput: SharedString| {
         createtype_data_bundle.borrow_mut().input_string = Some(newtypeinput.to_string());
         let data_bundle_ref = createtype_data_bundle.borrow();
