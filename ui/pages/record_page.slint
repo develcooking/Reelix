@@ -1,7 +1,7 @@
 import { VerticalBox, GroupBox, TextEdit, HorizontalBox, LineEdit, Button } from "std-widgets.slint";
 import { ComboBoxScroll } from "../ComboBoxScroll.slint";
 import { RadioButton, RadioBoxes } from "../RadioButton.slint";
-import { Logic, Others } from "../globale.slint";
+import { ReelixPalette, Logic, Others } from "../globale.slint";
 export component RecordPage inherits Rectangle {
     in property <[string]> the_model;
     in-out property <string> thedate;
@@ -69,6 +69,7 @@ export component RecordPage inherits Rectangle {
             HorizontalBox {
                 Button {
                     text: thedate;
+                    clicked => {datetimepopup.show()}
                 }
 
                 HorizontalBox {
@@ -88,6 +89,52 @@ export component RecordPage inherits Rectangle {
                     }
                 }
             }
+        }
+    }
+    datetimepopup :=  PopupWindow{
+        close-on-click: false;
+        width: parent.width /3;
+        height: parent.height /3;
+        Rectangle {
+            background: ReelixPalette.opaque-control-background;
+            border-radius: 3px;
+            border-width: 2px;
+            border-color: ReelixPalette.border;
+            VerticalBox {
+                HorizontalBox {
+                function unsel() { timenow.checked = false; timemoring.checked = false; timeafternoon.checked = false;}
+                alignment: center;
+                timenow := RadioButton { text: "Now"; checked: true; clicked => { unsel(); timenow.checked = true; } init () => { unsel(); timenow.checked = true; } }
+                timemoring := RadioButton { text: "Morning"; clicked => { unsel(); timemoring.checked = true; } }
+                timeafternoon := RadioButton { text: "Afternoon"; clicked => { unsel(); timeafternoon.checked = true; } }
+                }
+                date := LineEdit {
+                placeholder-text: "format should be: YYYY.MM.DD";
+                text: "";
+            }
+            HorizontalBox {
+                Button {
+                    text: "Close";
+                    clicked => {datetimepopup.close()}
+                }
+                Button {
+                    text: "Okay";
+                    clicked => {
+                        datetimepopup.close();
+                        Logic.date(date.text);
+                        if (timenow.checked == true){
+                            Logic.datetime(timenow.text);
+                        }
+                        else if (timemoring.checked == true){
+                            Logic.datetime(timemoring.text);
+                        }
+                        else if  (timeafternoon.checked == true){
+                            Logic.datetime(timeafternoon.text);
+                        }else{ Logic.datetime("Unknown Datetime")}
+                    }
+                }
+            }
+        }
         }
     }
 }

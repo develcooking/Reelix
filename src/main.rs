@@ -33,6 +33,7 @@ struct Databundlesendreq {
     current_value_type: Option<String>,
     current_location: Option<String>,
     operating_system: Option<String>,
+    datetime: Option<String>,
 }
 
 // Define a structure to represent a database record
@@ -144,11 +145,11 @@ fn send_request(data_bundle_sendreq: &Databundlesendreq) {
     if let (Some(current_value_type), Some(operating_system)) = (&data_bundle_sendreq.current_value_type, &data_bundle_sendreq.operating_system) {
         let current_datetime = Local::now();
         let date = current_datetime.format("%Y-%m-%d").to_string();
-        let time = current_datetime.format("%H:%M:%S").to_string();
+        let datetime = &data_bundle_sendreq.datetime;
         let comment_log = data_bundle_sendreq.comment_string.as_ref().map(|s| s.trim()).unwrap_or_default().to_string();
         let location = data_bundle_sendreq.current_location.as_ref().map(|s| s.trim()).filter(|s| !s.is_empty()).unwrap_or_else(|| "UNKNOWN");
         let query = "INSERT INTO Requests (Date, Time, Type, Operating_System, Comment_Log, Location) VALUES (?, ?, ?, ?, ?, ?)";
-        execute_query(query, &[&date, &time, current_value_type, operating_system, &comment_log, &location]).unwrap();
+        execute_query(query, &[&date, &datetime, current_value_type, operating_system, &comment_log, &location]).unwrap();
     } else {
         println!("current_value_type is None; cannot insert into database.");
     }
@@ -202,6 +203,7 @@ fn main() -> Result<(), slint::PlatformError> {
         current_value_type: None,
         current_location: None,
         operating_system: None,
+        datetime: None,
     }));
 
     let ui_handle_copy = ui_handle.clone();
@@ -259,6 +261,24 @@ fn main() -> Result<(), slint::PlatformError> {
             bundle.operating_system = Some(os.to_string());
             println!("value of operating system is: {}", os);
         }
+    });
+
+    let datetime_data_bundle = Rc::clone(&data_bundle_sendreq);
+    ui.global::<Logic>().on_datetime(move |datetime: SharedString| {
+
+        let timeformatted = if datetime == "Now" {
+            Local::now().format("%H:%M:%S").to_string()
+        } else if datetime == "Morning" {
+            String::from("8:01:00")
+        } else if datetime == "Afternoon" {
+            String::from("13:01:00")
+        } else {
+            String::from("Unknown")
+        };
+
+        let mut bundle = datetime_data_bundle.borrow_mut();
+        bundle.datetime = Some(timeformatted.to_string());
+        println! ("datetime is: {}", timeformatted)
     });
 
     // If the callback is trigergt grabs the current value of the comboboxScroll and delets it
