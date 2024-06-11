@@ -1,5 +1,5 @@
 ## About
-The only tally marks app you and your business need. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
+The last tally marks app you and your business will ever need. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
 Using the royalty-free license of Slint.
 
