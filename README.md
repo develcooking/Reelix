@@ -121,6 +121,8 @@ If this doesn't work, good luck.
 
 # Setting up the database
 In the future there will be a script or subproject to set up the database
+
+
 Install MariaDB or MySQL on a Linux system of your choice. Recommended: the latest stable release of Debian, currently 12.
 From: [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
 
