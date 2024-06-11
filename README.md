@@ -14,7 +14,7 @@ Using the royalty-free license of Slint.
 # Roadmap To 1.0
 - [ ] Feature parity with Neelix
 - [ ] Config needs to be configurable from the GUI
-- [ ] Build binaries for Windows, macOS, and Linux via GitLab pipelines
+- [ ] Build binaries for Windows, macOS, and Linux via Github actions
 
 # Things to add
 
@@ -23,7 +23,7 @@ On the Record panel
 - [x] Operating System selection in certain categories (doesn't disable if Support OS selection is deactivated) (linked to [Go to Independent / Global Issues](#independent--global-issues))
 - [x] A text box for comment info (implemented with LineEdit, waiting for new upstream version for text box placeholder, waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
 - [ ] Select time for submitting (can't select yet, coming soon) Proper Date and Time picker widgets depend on upstream [Tracked in issue #46](https://github.com/slint-ui/slint/issues/46)
-- [x] Select location of the issue
+- [x] Select location of the issue (needs to be rewritten to use the database)
 - [ ] Select the number of tickets you want to create at once
 - [x] Submit button
 
@@ -44,7 +44,9 @@ On the Analysis panel
 
 On the Category Management panel
 - [x] Create categories (types)
+    - [x] checkbox to set osselection enabled 
 - [x] Delete categories (types)
+    - [x] shows if osselection is supported 
 
 On the Settings panel
 - [ ] Ability to set a database timeout
