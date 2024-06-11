@@ -1,7 +1,5 @@
 ## About
-This project aims to replace the "Neelix" program in the IT support of the University of Bamberg. Neelix was written around 2015-2017, and the source code seems to be lost. You need to have Java installed and set a variable for JAVA_HOME. The database server uses an unsupported Linux system.
-
-Reelix aims to redo all of this. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
+The only tally marks app you and your business need. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
 Using the royalty-free license of Slint.
 
@@ -21,7 +19,7 @@ Using the royalty-free license of Slint.
 On the Record panel
 - [x] Replace ComboBox with ComboBoxScroll
 - [x] Operating System selection in certain categories (doesn't disable if Support OS selection is deactivated) (linked to [Go to Independent / Global Issues](#independent--global-issues))
-- [x] A text box for comment info (implemented with LineEdit, waiting for new upstream version for text box placeholder, waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
+- [x] A text box for comment info (implemented with LineEdit, waiting for a new upstream version for the text box placeholder, waiting for 1.6.1)[#5229](https://github.com/slint-ui/slint/discussions/5229)
 - [ ] Select time for submitting (can't select yet, coming soon) Proper Date and Time picker widgets depend on upstream [Tracked in issue #46](https://github.com/slint-ui/slint/issues/46)
 - [x] Select location of the issue (needs to be rewritten to use the database)
 - [ ] Select the number of tickets you want to create at once
@@ -90,6 +88,10 @@ RadioButton
 
 More things will be added in the future.
 
+# How this started
+Reelix aimed to replace Neelix a similar program in the IT support of the University of Bamberg. Neelix was written around 2015-2017, and the source code seems to be lost. You needed to have Java installed and set a variable for JAVA_HOME. The database server used an unsupported Linux system.
+So I was happily invested in it, spending many many hours programming, debugging and learning. After around a month of work, I was told that Reelix should be abandoned. "The new ticket system would work for us, it isn't the effort worth." I asked if I could have the rights to the project and they said yes. So I'm working on it now in my free time if I have one
+
 # How to use
 
 ### The easy way 
@@ -118,42 +120,7 @@ Download the bin file for your operating system of choice.
 If this doesn't work, good luck.
 
 # Setting up the database
-Install MariaDB or MySQL on a Linux system of your choice. Recommended: latest stable release of Debian, currently 12.
+Install MariaDB or MySQL on a Linux system of your choice. Recommended: the latest stable release of Debian, currently 12.
 
-From : [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
+From: [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
 
-```
-sudo apt update
-sudo apt install mariadb-server
-sudo mysql_secure_installation
-```
-
-Check if it worked
-```
-sudo systemctl status mariadb
-```
-
-Go into mariadb
-```
-sudo mariadb
-```
-
-Create a Database
-```
-CREATE DATABASE your_database_name;
-```
-
-Create a User with password
-```
-CREATE USER 'your_database_username'@'localhost' IDENTIFIED BY 'your_database_password';
-```
-
-Then grant the user all permissions on the database (can be insecure)
-```
-GRANT ALL PRIVILEGES ON your_database_name.* TO 'your_database_username'@'%';
-```
-
-Then grant the user acses to the the database from every host (can be insecure)
-```
-GRANT ALL PRIVILEGES ON *.* TO 'your_database_username'@'%' IDENTIFIED BY 'your_database_password' WITH GRANT OPTION;
-```
