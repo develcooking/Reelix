@@ -3,7 +3,7 @@ This project aims to replace the "Neelix" program in the IT support of the Unive
 
 Reelix aims to redo all of this. It is written in Rust and built with [Slint](https://slint.dev/) as the UI framework. Reelix should run on every desktop OS after compilation. Officially supported are (yet) only Linux and Windows.
 
-We are using the royalty-free license of Slint.
+Using the royalty-free license of Slint.
 
 <figure>
     <img src="./preview_of_Reelix_0.0.4.png"
