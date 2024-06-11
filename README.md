@@ -120,7 +120,42 @@ Download the bin file for your operating system of choice.
 If this doesn't work, good luck.
 
 # Setting up the database
+In the future there will be a script or subproject to set up the database
 Install MariaDB or MySQL on a Linux system of your choice. Recommended: the latest stable release of Debian, currently 12.
-
 From: [Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
 
+```
+sudo apt update
+sudo apt install mariadb-server
+sudo mysql_secure_installation
+```
+
+Check if it worked
+```
+sudo systemctl status mariadb
+```
+
+Go into mariadb
+```
+sudo mariadb
+```
+
+Create a Database
+```
+CREATE DATABASE your_database_name;
+```
+
+Create a User with password
+```
+CREATE USER 'your_database_username'@'localhost' IDENTIFIED BY 'your_database_password';
+```
+
+Then grant the user all permissions on the database (can be insecure)
+```
+GRANT ALL PRIVILEGES ON your_database_name.* TO 'your_database_username'@'%';
+```
+
+Then grant the user acses to the the database from every host (can be insecure)
+```
+GRANT ALL PRIVILEGES ON *.* TO 'your_database_username'@'%' IDENTIFIED BY 'your_database_password' WITH GRANT OPTION;
+```
