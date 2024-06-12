@@ -11,12 +11,23 @@ use mysql::prelude::*;
 use lazy_static::lazy_static;
 use chrono::{Local, Timelike, Datelike};
 
+// Initialize a global static connection pool using lazy_static
 lazy_static! {
-    static ref POOL: Pool = {
-        let database_url: &str = "mysql://theuser:12345@141.13.222.38:3306/thebanking1";
-        Pool::new(database_url)
-            .expect("Failed to create a connection pool")
+    static ref POOL: Option<Pool> = {
+        let database_url: &str = "mysql://theuser:12345@localhost/thebanking1";
+        match Pool::new(database_url) {
+            Ok(pool) => Some(pool),
+            Err(err) => {
+                eprintln!("Failed to create a connection pool: {}", err);
+                None
+            }
+        }
     };
+}
+
+// Global function to return the database connection pool
+fn get_db_pool() -> Result<&'static Pool, String> {
+    POOL.as_ref().ok_or_else(|| "Database connection pool is not available.".to_string())
 }
 
 // Define a structure to hold boolean value and input string
@@ -51,8 +62,9 @@ struct CheckboxData {
 
 // Function to fetch data from the database
 fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformError> {
+    let pool = get_db_pool().map_err(|err| slint::PlatformError::from(format!("Failed to get pool: {}", err)))?;
     // Establish a connection from the connection pool
-    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+    let mut conn = pool.get_conn().map_err(|err| slint::PlatformError::from(format!("Failed to get a connection from the pool: {}", err)))?;
     // Execute a query to fetch data
     let records: Vec<DatabaseRecord> = conn
         .query_map(
@@ -64,16 +76,25 @@ fn fetch_data_from_database() -> Result<Vec<DatabaseRecord>, slint::PlatformErro
             },
         )
         .map_err(|err| slint::PlatformError::from(format!("MySQL error: {}", err)))?;
-
     Ok(records)
 }
 
 // Function to execute a database query
-fn execute_query(query: &str, params: &[&dyn ToValue]) -> Result<(), Error> {
+fn execute_query(query: &str, params: &[&dyn ToValue]) -> Result<(), String> {
+    let pool = get_db_pool().map_err(|err| {
+        eprintln!("Failed to get pool: {}", err);
+        err
+    })?;
     // Establish a connection from the connection pool
-    let mut conn = POOL.get_conn().expect("Failed to get a connection from the pool");
+    let mut conn = pool.get_conn().map_err(|err| {
+        eprintln!("Failed to get a connection from the pool: {}", err);
+        err.to_string()
+    })?;
     // Execute the query with parameters
-    conn.exec_drop(query, params)?;
+    conn.exec_drop(query, params).map_err(|err| {
+        eprintln!("Failed to execute query: {}", err);
+        err.to_string()
+    })?;
     Ok(())
 }
 
@@ -81,9 +102,23 @@ fn execute_query(query: &str, params: &[&dyn ToValue]) -> Result<(), Error> {
 fn ask_for_checkbox_values(sel: &str, checkbox_data: &Rc<RefCell<CheckboxData>>) {
     // Formulate a query to select checkbox values based on selection
     let query = format!("SELECT osdep FROM Typtabelle WHERE Typen = '{}'", sel);
+    let pool = match get_db_pool() {
+        Ok(pool) => pool,
+        Err(err) => {
+            eprintln!("Cannot fetch checkbox values: {}", err);
+            return;
+        }
+    };
     // Execute the query and map the results
-    let result: Vec<Option<bool>> = POOL.get_conn().unwrap().query_map(&query, |osdep: Option<i32>| osdep.map(|val| val != 0)).unwrap();
-
+    let result: Vec<Option<bool>> = match pool.get_conn().and_then(|mut conn| {
+        conn.query_map(&query, |osdep: Option<i32>| osdep.map(|val| val != 0))
+    }) {
+        Ok(result) => result,
+        Err(err) => {
+            eprintln!("Failed to execute query: {}", err);
+            return;
+        }
+    };
     // Extract and update the checkbox value
     let value = result.get(0).cloned().unwrap_or_default();
     checkbox_data.borrow_mut().osdep_value = value;
@@ -93,23 +128,39 @@ fn ask_for_checkbox_values(sel: &str, checkbox_data: &Rc<RefCell<CheckboxData>>)
 // Function to remove data from the database
 fn remove_data_from_database(valueofcombobox: &str) {
     // Establish a connection from the connection pool
-    let mut conn = POOL.get_conn()
-        .expect("Failed to get a connection from the pool");
+    let pool = match get_db_pool() {
+        Ok(pool) => pool,
+        Err(err) => {
+            eprintln!("Cannot remove data: {}", err);
+            return;
+        }
+    };
+    let mut conn = match pool.get_conn() {
+        Ok(conn) => conn,
+        Err(err) => {
+            eprintln!("Failed to get a connection from the pool: {}", err);
+            return;
+        }
+    };
     let typen = valueofcombobox.trim();
     if !typen.is_empty() && typen != "Select a Category to Remove" {
         // Execute a query to delete data from the database
-        conn.exec_drop(
-            r"DELETE FROM Typtabelle WHERE Typen = ?",
-            (&typen,)
-        ).expect("Error while removing a Category");
-    
-        println!("Data removed successfully!");
+        if let Err(err) = conn.exec_drop(r"DELETE FROM Typtabelle WHERE Typen = ?", (&typen,)) {
+            eprintln!("Error while removing a Category: {}", err);
+        } else {
+            println!("Data removed successfully!");
+        }
     } else {
         println!("Default String to Remove or empty string can't be removed");
     }
 }
 
 fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxData>>) -> Result<(), slint::PlatformError> {
+    // Get current date into date button on request page
+    let current_date = Local::now().format("%Y-%m-%d").to_string();
+    let shared_date = SharedString::from(current_date);
+    ui.set_thedate(shared_date.into());
+
     let data_from_db = fetch_data_from_database()?;
     let mut shared_typen_strings = Vec::new();
     let mut shared_osdep_strings = Vec::new();
@@ -132,19 +183,15 @@ fn update_database_display(ui: &MainWindow, checkbox_data: &Rc<RefCell<CheckboxD
         ui.set_ossupportbox_value(osdep_value);
     }
     ui.set_the_model(model_rc);
-    let current_datetime = Local::now();
-    let date = current_datetime.format("%Y-%m-%d").to_string();
-    let shared_date = SharedString::from(date);
-    ui.set_thedate(shared_date.into());
 
     Ok(())
 }
 
+// Insets the data from request page into the database
 fn send_request(data_bundle_sendreq: &Databundlesendreq) {
     println!("sendrequest: {:?}", data_bundle_sendreq);
     if let (Some(current_value_type), Some(operating_system)) = (&data_bundle_sendreq.current_value_type, &data_bundle_sendreq.operating_system) {
-        let current_datetime = Local::now();
-        let date = current_datetime.format("%Y-%m-%d").to_string();
+        let date = Local::now().format("%Y-%m-%d").to_string();
         let datetime = &data_bundle_sendreq.datetime;
         let comment_log = data_bundle_sendreq.comment_string.as_ref().map(|s| s.trim()).unwrap_or_default().to_string();
         let location = data_bundle_sendreq.current_location.as_ref().map(|s| s.trim()).filter(|s| !s.is_empty()).unwrap_or_else(|| "UNKNOWN");
@@ -165,11 +212,14 @@ fn createcategory(data_bundle: &DataBundleCreate) {
         if let Some(bool_value) = data_bundle.bool_value {
             if bool_value == true || bool_value == false {
                 let checkboxvalue = !bool_value;
-            // Insert data into database
+                // Insert data into database
                 if !filtered_text.is_empty() {
                     let query = "INSERT INTO Typtabelle (Typen, osdep) VALUES (?, ?)";
-                    execute_query(query, &[&filtered_text, &checkboxvalue]).expect("Error inserting data");
-                    println!("Data inserted successfully!");
+                    if let Err(err) = execute_query(query, &[&filtered_text, &checkboxvalue]) {
+                        println!("Error inserting data: {}", err);
+                    } else {
+                        println!("Data inserted successfully!");
+                    }
                 } else {
                     println!("Empty or whitespace-laden type string not inserted into the database.");
                 }
