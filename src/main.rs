@@ -155,7 +155,7 @@ fn send_request(data_bundle_sendreq: &Databundlesendreq) {
     }
 }
 
-fn createdata(data_bundle: &DataBundleCreate) {
+fn createcategory(data_bundle: &DataBundleCreate) {
     // Insert the data into the database if input_string is valid
     if let Some(input_string) = &data_bundle.input_string {
         let filtered_text = input_string.trim().to_string();
@@ -223,7 +223,7 @@ fn main() -> Result<(), slint::PlatformError> {
         createtype_data_bundle.borrow_mut().input_string = Some(newtypeinput.to_string());
         let data_bundle_ref = createtype_data_bundle.borrow();
         if let Some(true) | Some(false) = data_bundle_ref.bool_value {
-            createdata(&data_bundle_ref);
+            createcategory(&data_bundle_ref);
         }
 
         let _ = update_database_display(&ui_handle_copy.unwrap(), &checkbox_data_copy1);
