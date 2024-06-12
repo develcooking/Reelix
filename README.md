@@ -95,7 +95,7 @@ So I was happily invested in it, spending many many hours programming, debugging
 # How to use
 
 ### The easy way 
-Download the bin file for your operating system of choice.
+Download the bin file for your operating system of choice.(If there is one)
 
 ### The hard way
 1. You have to install `rustc` and `cargo` [(Rust Getting Started Guide)](https://www.rust-lang.org/learn/get-started)
