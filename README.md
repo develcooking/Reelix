@@ -105,7 +105,7 @@ Download the bin file for your operating system of choice.(If there is one)
     ```
 3. Clone this repo
     ```
-    git clone https://gitlab.rz.uni-bamberg.de/ba4ju8/reelix/
+    git clone https://github.com/develcooking/Reelix/
     ```
 4. Change directory into it    
     ```
